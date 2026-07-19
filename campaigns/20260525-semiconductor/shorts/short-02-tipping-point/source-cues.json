@@ -1,0 +1,10 @@
+{
+  "short": "short-02-tipping-point",
+  "key_quotes": [
+    { "timestamp_start": "00:08:31", "text": "변곡점이 있는데 한번이 변곡점에 들어가면 그다음부터 돌이키기가 어려워져요" },
+    { "timestamp_start": "00:08:39", "text": "메모리가 될건, GPU가 됐건 이게 레퍼런스가 되면" },
+    { "timestamp_start": "00:08:51", "text": "나중에는 만나고 싶어도 못 만나게" },
+    { "timestamp_start": "00:09:27", "text": "전기차 같은 경우 맨 처음엔 중국에서만 팔았어요" }
+  ],
+  "source_range": { "start": "00:08:00", "end": "00:12:00" }
+}

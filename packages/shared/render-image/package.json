@@ -1,0 +1,19 @@
+{
+  "name": "@marketing-studio/render-image",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@marketing-studio/types": "workspace:*",
+    "@marketing-studio/brand": "workspace:*",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

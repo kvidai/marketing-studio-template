@@ -1,0 +1,9 @@
+{
+  "short": "short-03-carabiner-strategy",
+  "key_quotes": [
+    { "timestamp_start": "00:18:32", "text": "절벽에다가 징을 박는다. 카라비나를 박는다." },
+    { "timestamp_start": "00:18:36", "text": "이 카라비나가 만약에 100개 중에서 90개가 떨어져도 나는 10개를 남기면 된다" },
+    { "timestamp_start": "00:18:41", "text": "그렇게 하고 나서 카라비나를 박고 올라가는 전략" }
+  ],
+  "source_range": { "start": "00:17:30", "end": "00:22:00" }
+}

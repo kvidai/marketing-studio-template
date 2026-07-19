@@ -1,0 +1,27 @@
+{
+  "name": "vision-checker-skill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Reusable Codex skill runtime for cheap screenshot and image QA",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "tsx check-image.ts",
+    "test": "tsx --test tests/vision-checker.test.ts",
+    "claude-wrapper": "bash ./claude-wrapper.sh",
+    "prepare": "REPO_ROOT=$(cd ../../.. && pwd) && mkdir -p \"$REPO_ROOT/.claude/skills/vision-checker\" && ln -sf ../../../.agents/skills/vision-checker/SKILL.md \"$REPO_ROOT/.claude/skills/vision-checker/SKILL.md\" && echo 'vision-checker: SKILL.md symlinked to .claude/skills/vision-checker/'"
+  },
+  "bin": {
+    "vision-checker": "./check-image.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.6",
+    "typescript": "^5.0.0"
+  }
+}

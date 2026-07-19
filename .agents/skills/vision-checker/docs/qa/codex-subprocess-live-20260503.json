@@ -1,0 +1,31 @@
+{
+  "pass": true,
+  "confidence": 0.95,
+  "screenshot": "/home/ubuntu/code_workspace/affyink/docs/ui-screenshots/outreach-inbox/affiliate-inbox_20260503.png",
+  "provider": "codex-cli",
+  "model": "gpt-4.1-mini",
+  "issues": [],
+  "summary": "The inbox UI renders successfully with visible main menu, header, and inbox title. There are no clipped or missing major elements. Text and buttons appear intact. Layout is consistent and usable.",
+  "signals": {
+    "width": 1920,
+    "height": 1080,
+    "blankLike": false,
+    "lowVariance": false,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "viewportMatches": null,
+    "warnings": []
+  },
+  "artifacts": {
+    "overviewPath": "/tmp/affyink-ui-vision-check/..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/overview.jpg",
+    "tilePaths": [
+      "/tmp/affyink-ui-vision-check/..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_top_left.png",
+      "/tmp/affyink-ui-vision-check/..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_top_right.png",
+      "/tmp/affyink-ui-vision-check/..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_bottom_left.png",
+      "/tmp/affyink-ui-vision-check/..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_bottom_right.png",
+      "/tmp/affyink-ui-vision-check/..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_center.png"
+    ]
+  },
+  "rawResponse": "{\"pass\":true,\"confidence\":0.95,\"issues\":[],\"summary\":\"The inbox UI renders successfully with visible main menu, header, and inbox title. There are no clipped or missing major elements. Text and buttons appear intact. Layout is consistent and usable.\"}"
+}

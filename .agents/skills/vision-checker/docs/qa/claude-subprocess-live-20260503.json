@@ -1,0 +1,31 @@
+{
+  "pass": true,
+  "confidence": 0.9,
+  "screenshot": "/home/ubuntu/code_workspace/affyink/docs/ui-screenshots/outreach-inbox/affiliate-inbox_20260503.png",
+  "provider": "claude-cli",
+  "model": "claude-cli-template",
+  "issues": [],
+  "summary": "Inbox UI renders correctly with clean layout, functional navigation, proper header/branding, and normal empty inbox state. All text readable and UI elements properly positioned.",
+  "signals": {
+    "width": 1920,
+    "height": 1080,
+    "blankLike": false,
+    "lowVariance": false,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "viewportMatches": null,
+    "warnings": []
+  },
+  "artifacts": {
+    "overviewPath": "/tmp/affyink-ui-vision-check/..-..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/overview.jpg",
+    "tilePaths": [
+      "/tmp/affyink-ui-vision-check/..-..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_top_left.png",
+      "/tmp/affyink-ui-vision-check/..-..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_top_right.png",
+      "/tmp/affyink-ui-vision-check/..-..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_bottom_left.png",
+      "/tmp/affyink-ui-vision-check/..-..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_bottom_right.png",
+      "/tmp/affyink-ui-vision-check/..-..-..-docs-ui-screenshots-outreach-inbox-affiliate-inbox_20260503.png/tiles/tile_center.png"
+    ]
+  },
+  "rawResponse": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":51484,\"duration_api_ms\":51189,\"num_turns\":8,\"result\":\"\",\"stop_reason\":\"end_turn\",\"session_id\":\"efe7bf13-933e-4bd3-9cd5-9415877d735b\",\"total_cost_usd\":0.24916169999999999,\"usage\":{\"input_tokens\":66,\"cache_creation_input_tokens\":38938,\"cache_read_input_tokens\":249704,\"output_tokens\":1869,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":38938,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"\",\"iterations\":[{\"input_tokens\":8,\"output_tokens\":183,\"cache_read_input_tokens\":38542,\"cache_creation_input_tokens\":396,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":396},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-sonnet-4-20250514\":{\"inputTokens\":66,\"outputTokens\":1869,\"cacheReadInputTokens\":249704,\"cacheCreationInputTokens\":38938,\"webSearchRequests\":0,\"costUSD\":0.24916169999999999,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"structured_output\":{\"pass\":true,\"confidence\":0.9,\"issues\":[],\"summary\":\"Inbox UI renders correctly with clean layout, functional navigation, proper header/branding, and normal empty inbox state. All text readable and UI elements properly positioned.\"},\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"1c42f6ff-ea29-4c59-832c-c81d6c79616d\"}\n"
+}

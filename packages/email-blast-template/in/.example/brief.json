@@ -1,0 +1,7 @@
+{
+  "subject": "이메일 제목을 여기에 작성 (30자 이내)",
+  "previewText": "수신함에서 보이는 프리뷰 텍스트 (선택, 90자 이내)",
+  "fromName": "kvid.ai",
+  "summary": "이메일 내용 한 줄 요약 (body.html 없을 때 fallback으로 사용)",
+  "recipients": []
+}

@@ -1,0 +1,10 @@
+{
+  "subject": "[smoke-test-001] marketing-studio pipeline check — 2026-05-09",
+  "previewText": "Internal validation. Ignore.",
+  "fromName": "kvid.ai",
+  "recipients": [
+    "kvidai030@gmail.com",
+    "wu19u.test@inbox.testmail.app"
+  ],
+  "summary": "Smoke test from marketing-studio email-blast-template. If you see this, SES + scaffold are wired correctly."
+}

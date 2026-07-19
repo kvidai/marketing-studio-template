@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "description": "https://github.com/upstash/context7?tab=readme-ov-file#cursor-remote-server-connection"
+    }
+  }
+}

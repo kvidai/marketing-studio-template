@@ -1,0 +1,23 @@
+{
+  "brand": "kvidai",
+  "format": "square",
+  "slides": [
+    {
+      "layout": "title",
+      "headline": "AI로 만드는\n마케팅 자동화",
+      "body": "kvid.ai"
+    },
+    {
+      "layout": "content",
+      "headline": "하나의 콘텐츠",
+      "body": "이메일 · 블로그 · 카드뉴스 · 레딧"
+    },
+    {
+      "layout": "closing",
+      "headline": "지금 시작하세요",
+      "body": "console.kvid.ai"
+    }
+  ],
+  "caption": "AI가 만드는 마케팅 콘텐츠의 새로운 기준.\n\n하나의 캠페인, 모든 채널 자동 배포.",
+  "hashtags": ["#kvid_ai", "#AI마케팅", "#콘텐츠자동화"]
+}

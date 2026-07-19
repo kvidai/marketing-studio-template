@@ -1,0 +1,10 @@
+안녕하세요,
+
+이메일 텍스트 버전을 여기에 작성하세요.
+HTML을 지원하지 않는 클라이언트를 위한 plain text 버전입니다.
+
+지금 시작하기: https://console.kvid.ai
+
+--
+kvid.ai
+수신거부: {{unsubscribeUrl}}

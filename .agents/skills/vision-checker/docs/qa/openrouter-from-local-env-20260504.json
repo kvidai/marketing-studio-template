@@ -1,0 +1,31 @@
+{
+  "pass": true,
+  "confidence": 0.95,
+  "screenshot": "/home/ubuntu/code_workspace/dev-standards/contextual/.agents/skills/vision-checker/tests/fixtures/infl-fashion-01-marketplace_20260502.png",
+  "provider": "openai-compatible",
+  "model": "anthropic/claude-haiku-4-5",
+  "issues": [],
+  "summary": "**Visual Inventory:**\n\nHeader:\n- Logo: 'affy.ink' with 'Affiliate Portal' subtitle (top-left)\n- Greeting text: 'Welcome back, 박소연'\n- Alert banner: Orange/tan background with warning icon, text 'Complete account verification to join affiliate programs.' with 'View details' link (top-right)\n- Notification bell icon (top-right)\n\nSidebar (left):\n- Main Menu section with items: Dashboard, Revenue Links, Referrals, Payouts, Resources, Reports (marked BETA in yellow), Marketplace (marked NEW in yellow), My Networks\n- Account section with: Verification, Settings\n- User profile at bottom: 'N' avatar, '박소연 (패션)' name, partial email 'infl-fashion-01@bffy-...'\n\nMain Content:\n- Title: 'Network Marketplace'\n- Subtitle: 'Discover brands to promote and earn commissions'\n- Search bar: 'Search brands...'\n- Dropdown: 'All Categories'\n- Grid layout with 6 brand cards displayed:\n  1. 스포츠 브랜드 F (Sports) - 0 programs - View Details button\n  2. 라이프스타일 E (Lifestyle) - 0 programs - View Details button\n  3. 푸드 브랜드 D (Food) - 0 programs - View Details button\n  4. 테크 브랜드 C (Tech) - 20% commission - 1 program - View Details button\n  5. 뷰티 브랜드 B (Beauty) - 20% commission - 1 program - View Details button\n  6. 패션 브랜드 A (Fashion) - 20% commission - 1 program - View Details button\n\nEach card contains:\n- Category icon (colored)\n- Korean brand name and English category\n- Description text (Korean)\n- Program count\n- Commission percentage (if applicable)\n- Bright yellow/lime 'View Details' button\n\n**Rendering Verdict:**\nAll UI elements render correctly with no clipping, overflow, or misalignment. Text is fully readable including all CJK characters. The layout is clean with proper spacing. Navigation sidebar is fully functional and visible. All interactive elements (buttons, search, dropdown) are prominent and clickable. The authenticated state is correctly displayed with user name and verification alert. No loading spinners or error states present. Content grid is properly aligned in a 3-column layout. All brand cards display complete information without truncation.",
+  "signals": {
+    "width": 1920,
+    "height": 1080,
+    "blankLike": false,
+    "lowVariance": false,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "viewportMatches": null,
+    "warnings": []
+  },
+  "artifacts": {
+    "overviewPath": "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/overview.jpg",
+    "tilePaths": [
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_top_left.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_top_right.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_bottom_left.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_bottom_right.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_center.png"
+    ]
+  },
+  "rawResponse": "{\"content\":\"```json\\n{\\n  \\\"pass\\\": true,\\n  \\\"confidence\\\": 0.95,\\n  \\\"issues\\\": [],\\n  \\\"summary\\\": \\\"**Visual Inventory:**\\\\n\\\\nHeader:\\\\n- Logo: 'affy.ink' with 'Affiliate Portal' subtitle (top-left)\\\\n- Greeting text: 'Welcome back, 박소연'\\\\n- Alert banner: Orange/tan background with warning icon, text 'Complete account verification to join affiliate programs.' with 'View details' link (top-right)\\\\n- Notification bell icon (top-right)\\\\n\\\\nSidebar (left):\\\\n- Main Menu section with items: Dashboard, Revenue Links, Referrals, Payouts, Resources, Reports (marked BETA in yellow), Marketplace (marked NEW in yellow), My Networks\\\\n- Account section with: Verification, Settings\\\\n- User profile at bottom: 'N' avatar, '박소연 (패션)' name, partial email 'infl-fashion-01@bffy-...'\\\\n\\\\nMain Content:\\\\n- Title: 'Network Marketplace'\\\\n- Subtitle: 'Discover brands to promote and earn commissions'\\\\n- Search bar: 'Search brands...'\\\\n- Dropdown: 'All Categories'\\\\n- Grid layout with 6 brand cards displayed:\\\\n  1. 스포츠 브랜드 F (Sports) - 0 programs - View Details button\\\\n  2. 라이프스타일 E (Lifestyle) - 0 programs - View Details button\\\\n  3. 푸드 브랜드 D (Food) - 0 programs - View Details button\\\\n  4. 테크 브랜드 C (Tech) - 20% commission - 1 program - View Details button\\\\n  5. 뷰티 브랜드 B (Beauty) - 20% commission - 1 program - View Details button\\\\n  6. 패션 브랜드 A (Fashion) - 20% commission - 1 program - View Details button\\\\n\\\\nEach card contains:\\\\n- Category icon (colored)\\\\n- Korean brand name and English category\\\\n- Description text (Korean)\\\\n- Program count\\\\n- Commission percentage (if applicable)\\\\n- Bright yellow/lime 'View Details' button\\\\n\\\\n**Rendering Verdict:**\\\\nAll UI elements render correctly with no clipping, overflow, or misalignment. Text is fully readable including all CJK characters. The layout is clean with proper spacing. Navigation sidebar is fully functional and visible. All interactive elements (buttons, search, dropdown) are prominent and clickable. The authenticated state is correctly displayed with user name and verification alert. No loading spinners or error states present. Content grid is properly aligned in a 3-column layout. All brand cards display complete information without truncation.\\\"\\n}\\n```\",\"usage\":{\"prompt_tokens\":5399,\"completion_tokens\":665,\"total_tokens\":6064,\"cost\":0.008724,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.008724,\"upstream_inference_prompt_cost\":0.005399,\"upstream_inference_completions_cost\":0.003325},\"completion_tokens_details\":{\"reasoning_tokens\":0,\"image_tokens\":0,\"audio_tokens\":0}}}"
+}

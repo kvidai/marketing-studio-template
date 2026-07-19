@@ -1,0 +1,29 @@
+{
+  "title": "카드뉴스 예제",
+  "brand": "kvidai",
+  "format": "square",
+  "slides": [
+    {
+      "layout": "title",
+      "headline": "AI로 만드는\n마케팅 콘텐츠",
+      "body": "kvid.ai 카드뉴스"
+    },
+    {
+      "layout": "content",
+      "headline": "왜 AI 마케팅인가",
+      "body": "콘텐츠 품질을 AI가 만들 수 있는 최대로"
+    },
+    {
+      "layout": "content",
+      "headline": "3가지 핵심 채널",
+      "body": "이메일 · 블로그 · 카드뉴스"
+    },
+    {
+      "layout": "closing",
+      "headline": "지금 시작하세요",
+      "body": "console.kvid.ai"
+    }
+  ],
+  "caption": "AI가 만드는 마케팅 콘텐츠의 새로운 기준.\n\n스크롤을 멈추게 하는 카드뉴스, 이제 코드로 자동화합니다.",
+  "hashtags": ["#kvid", "#AI마케팅", "#콘텐츠자동화", "#마케팅스튜디오"]
+}

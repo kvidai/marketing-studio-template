@@ -1,0 +1,95 @@
+# Project-scoped Codex configuration for affyink.
+#
+# Source references:
+# - .mcp.json
+# - .claude/settings.json
+#
+# Notes:
+# - Claude's .claude/settings.json permission/plugin schema is not compatible
+#   with Codex config.toml, so those entries are intentionally not mirrored.
+# - Instruction files are shared through AGENTS.md symlinks to CLAUDE.md.
+# - .claude/rules/*.md are project instruction documents. Do not link them to
+#   .codex/rules/, because Codex .rules files are command approval policies.
+#   CLAUDE.md/AGENTS.md explicitly requires Codex to read the relevant files.
+
+model = "gpt-5.4"
+project_doc_max_bytes = 65536
+project_doc_fallback_filenames = [
+  "CLAUDE.md",
+  ".claude/rules/dependency-management.md",
+  ".claude/rules/documentation-rules.md",
+  ".claude/rules/file-path-rules.md",
+  ".claude/rules/git-commit-rules.md",
+  ".claude/rules/plan-conventions.md",
+  ".claude/rules/workflow-rules.md",
+  ".claude/rules/coding-guidelines.md"
+]
+project_root_markers = [".git", "pnpm-workspace.yaml", "turbo.json"]
+developer_instructions = """
+Use .claude/plans/ as the only persistent plan directory.
+For any non-trivial task, including all Plan mode work, create or reuse a plan file in .claude/plans/ before implementation.
+Never create persistent plan files outside .claude/plans/.
+Treat every Markdown file under .claude/rules/ as an active project rule document and read all of them before starting non-trivial work.
+Follow .claude/rules/plan-conventions.md for plan file names, file structure, status values, and updates.
+When work starts, the relevant plan should be named or updated as *_wip_*.md.
+When work completes, update the plan content and rename it to *_done_*.md when appropriate.
+If a task is trivial and no plan file is created, briefly state that it was intentionally skipped because the task was trivial.
+"""
+default_permissions = "marketing-automation"
+
+## Claude의 opusplan처럼 “plan 단계는 Opus, 실행 단계는 다른 모델” 같은 자동 이중 모델 모드는 Codex config에서 별도 전용 키가 있는 형태는 아닙니다. Codex 쪽은 기본적으로 model 또는 profile 단위로 고르는 방식입니다.
+## 현재 로컬 codex --help 기준으로도 -m, --model <MODEL> 및 -c model="..."가 공식 진입점입니다. 사용은 `codex -p fast`, `codex -p deep`로 하면 됩니다.
+[profiles.fast]
+model = "gpt-5.4-mini"
+
+[profiles.deep]
+model = "gpt-5.5"
+
+[features]
+memories = true
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+enabled = true
+
+[permissions.marketing-automation.filesystem]
+glob_scan_max_depth = 8
+
+[permissions.marketing-automation.filesystem.":project_roots"]
+# "some/path/**" = "read"   # 읽기 가능
+# "some/path/**" = "write"  # 읽기/쓰기 가능
+# "some/path/**" = "none"   # 접근 금지
+"." = "write"
+"package-lock.json" = "none"
+"docs/ai-query-list/**" = "none"
+".google-apps-script/**" = "none"
+".patches/**" = "none"
+"references_deprecated/**" = "none"
+"**/references_deprecated/**" = "none"
+"GEMINI.md" = "none"
+"**/GEMINI.md" = "none"
+# ".env.local" = "none"
+# ".env.*.local" = "none"
+".DS_Store" = "none"
+"Thumbs.db" = "none"
+# "node_modules/**" = "none"
+# ".git/**" = "none"
+"node_modules/.cache/**" = "none"
+"**/.cache/**" = "none"
+".pnpm-store/**" = "none"
+".omc/**" = "none"
+".turbo/**" = "none"
+# Keep build outputs readable when debugging framework/package issues.
+# ".next/**" = "none"
+# "dist/**" = "none"
+"coverage/**" = "none"
+# ".stryker-tmp/**" = "none"
+# "**/.stryker-tmp/**" = "none"
+"playwright-report/**" = "none"
+"test-results/**" = "none"
+"*.log" = "none"
+"**/*.log" = "none"
+"2026-*-this-session-is-being-continued-from-a-previous-c.txt" = "none"
+"**/2026-*-this-session-is-being-continued-from-a-previous-c.txt" = "none"

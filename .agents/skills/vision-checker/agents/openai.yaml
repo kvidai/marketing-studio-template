@@ -1,0 +1,4 @@
+interface:
+  display_name: Vision Checker
+  short_description: Cheap visual QA for one image or ordered image directory with OpenRouter, Codex, or Claude wrapper subprocesses.
+  default_prompt: Validate one screenshot, slide export directory, or frame directory with the bundled vision-checker. Prefer claude-3-5-haiku-latest for cheap Anthropic checks, x-ai/grok-2-vision-1212 for cheap Grok vision checks, and qwen or glm vision models for low-cost Chinese multimodal checks. Return JSON-based pass fail findings only.

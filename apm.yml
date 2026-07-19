@@ -1,0 +1,11 @@
+name: marketing-studio-template
+version: 1.0.0
+description: AI-assisted marketing content creation and channel publishing template
+author: kvidai
+dependencies:
+  apm:
+  - kvidai/kvidai-skills                 # kvidai video project, media, preset, video-use skills
+  # - mattpocock/skills/skills/productivity/grill-me
+  mcp: []
+includes: auto
+scripts: {}

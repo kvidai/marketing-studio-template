@@ -1,0 +1,22 @@
+{
+  "name": "blog-post-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "publish-post": "tsx src/publish.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@marketing-studio/env": "workspace:*",
+    "@marketing-studio/publish-nodebb": "workspace:*",
+    "@marketing-studio/publish-discourse": "workspace:*",
+    "@marketing-studio/types": "workspace:*",
+    "@marketing-studio/upload-assets": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

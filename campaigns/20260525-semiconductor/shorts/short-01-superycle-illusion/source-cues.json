@@ -1,0 +1,25 @@
+{
+  "short": "short-01-supercycle-illusion",
+  "source_srt": "우리가 잘해서 번 게 아닙니다 역대급 실적 속에서도, 중국 반도체 경계해야하는 이유 (권석준 교수).srt",
+  "key_quotes": [
+    {
+      "timestamp_start": "00:48:48",
+      "timestamp_end": "00:49:00",
+      "text": "슈퍼사이클에 대해서 우리가 착시를 하고 있어요. 우리가 잘한 것도 있어요. 근데 운대가 맞았고"
+    },
+    {
+      "timestamp_start": "00:49:17",
+      "timestamp_end": "00:49:31",
+      "text": "실적에 가려진 비실비실한 체력을 우리가 좀 경계해야 하는 시점이고"
+    },
+    {
+      "timestamp_start": "00:50:05",
+      "timestamp_end": "00:50:15",
+      "text": "GPU하고의 합... 종속적이었다는 거예요."
+    }
+  ],
+  "source_range": {
+    "start": "00:48:00",
+    "end": "00:52:00"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "short": "short-04-golden-window",
+  "key_quotes": [
+    { "timestamp_start": "00:00:03", "text": "아직 타임 윈도우는 열려 있다" },
+    { "timestamp_start": "00:00:05", "text": "그런데 이 윈도우가 생각보다 그렇게 넓진 않다. 그리고 닫히는 속도 점점 빨라지고 있다" },
+    { "timestamp_start": "00:00:10", "text": "지금부터는 정말 고수익, 고부가 같이 고급품 위주로 가야 될 것이고" }
+  ],
+  "source_range": { "start": "00:00:00", "end": "00:05:00" }
+}

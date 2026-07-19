@@ -1,0 +1,10 @@
+# Generated assets — do not commit
+public/audio/
+public/images/
+public/shared/
+out/
+!out/cardnews/
+
+# Work / intermediate artifacts
+work/
+assets/reference/

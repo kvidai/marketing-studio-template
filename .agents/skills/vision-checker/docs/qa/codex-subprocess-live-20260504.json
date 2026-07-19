@@ -1,0 +1,31 @@
+{
+  "pass": true,
+  "confidence": 0.93,
+  "screenshot": "/home/ubuntu/code_workspace/dev-standards/contextual/.agents/skills/vision-checker/tests/fixtures/infl-fashion-01-marketplace_20260502.png",
+  "provider": "codex-cli",
+  "model": "gpt-5.4-mini",
+  "issues": [],
+  "summary": "Visible text and UI inventory: top-left brand/logo area shows “affy.ink” and subtitle “Affiliate Portal”. A left sidebar labeled “Main Menu” contains navigation items “Dashboard”, “Revenue Links”, “Referrals”, “Payouts”, “Resources”, “Reports” with a yellow “BETA” tag, “Marketplace” with a yellow “NEW” tag, “My Networks”, and “Tax / KYC”. A lower “Account” section contains “Verification” and “Settings”. At the bottom of the sidebar, the signed-in user area shows the name “박소연 (패션)” and a truncated email beginning “infl-fashion-01@bffy-...”. The main header area says “Welcome back, 박소연” and includes a bell/notification icon at the top right. Below it is a pale warning banner reading “Complete account verification to join affiliate programs.” with a “View details” button on the right. The page title reads “Network Marketplace” with subtitle “Discover brands to promote and earn commissions”. A search input shows placeholder text “Search brands...” and a category dropdown shows “All Categories”. The content area shows a grid of brand cards: “스포츠 브랜드 F” with tag “sports”, body copy “아웃도어 & 피트니스 전문 브랜드”, count “0 programs”, and a “View Details” button; “라이프스타일 E” with tag “lifestyle”, body copy “홈 인테리어 & 라이프스타일 큐레이션”, count “0 programs”, and “View Details”; “푸드 브랜드 D” with tag “food”, body copy “건강식품 & 간편식 구독 브랜드”, count “0 programs”, and “View Details”; “테크 브랜드 C” with tag “tech”, body copy “스마트홈 & 가전 전문 e커머스”, count “1 program”, a “% 20%” badge, and “View Details”; “뷰티 브랜드 B” with tag “beauty”, body copy “K-뷰티 스킨케어 전문 브랜드”, count “1 program”, a “% 20%” badge, and “View Details”; “패션 브랜드 A” with tag “fashion”, body copy “MZ 세대를 위한 트렌디한 패션 브랜드”, count “1 program”, a “% 20%” badge, and “View Details”. Layout structure: fixed left sidebar, narrow top header area, warning banner below the header, then the marketplace title/search controls, then a 3-column card grid with two visible rows; large empty beige space remains below the cards. Visual state: authenticated, populated marketplace, no loading spinner, no error state. Verdict: pass. The screen renders successfully with readable text, intact buttons, visible navigation, and no obvious clipping, overlap, broken images, or full-page rendering failures.",
+  "signals": {
+    "width": 1920,
+    "height": 1080,
+    "blankLike": false,
+    "lowVariance": false,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "viewportMatches": null,
+    "warnings": []
+  },
+  "artifacts": {
+    "overviewPath": "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/overview.jpg",
+    "tilePaths": [
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_top_left.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_top_right.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_bottom_left.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_bottom_right.png",
+      "/tmp/affyink-ui-vision-check/tests-fixtures-infl-fashion-01-marketplace_20260502.png/tiles/tile_center.png"
+    ]
+  },
+  "rawResponse": "{\"content\":\"{\\\"pass\\\":true,\\\"confidence\\\":0.93,\\\"issues\\\":[],\\\"summary\\\":\\\"Visible text and UI inventory: top-left brand/logo area shows “affy.ink” and subtitle “Affiliate Portal”. A left sidebar labeled “Main Menu” contains navigation items “Dashboard”, “Revenue Links”, “Referrals”, “Payouts”, “Resources”, “Reports” with a yellow “BETA” tag, “Marketplace” with a yellow “NEW” tag, “My Networks”, and “Tax / KYC”. A lower “Account” section contains “Verification” and “Settings”. At the bottom of the sidebar, the signed-in user area shows the name “박소연 (패션)” and a truncated email beginning “infl-fashion-01@bffy-...”. The main header area says “Welcome back, 박소연” and includes a bell/notification icon at the top right. Below it is a pale warning banner reading “Complete account verification to join affiliate programs.” with a “View details” button on the right. The page title reads “Network Marketplace” with subtitle “Discover brands to promote and earn commissions”. A search input shows placeholder text “Search brands...” and a category dropdown shows “All Categories”. The content area shows a grid of brand cards: “스포츠 브랜드 F” with tag “sports”, body copy “아웃도어 & 피트니스 전문 브랜드”, count “0 programs”, and a “View Details” button; “라이프스타일 E” with tag “lifestyle”, body copy “홈 인테리어 & 라이프스타일 큐레이션”, count “0 programs”, and “View Details”; “푸드 브랜드 D” with tag “food”, body copy “건강식품 & 간편식 구독 브랜드”, count “0 programs”, and “View Details”; “테크 브랜드 C” with tag “tech”, body copy “스마트홈 & 가전 전문 e커머스”, count “1 program”, a “% 20%” badge, and “View Details”; “뷰티 브랜드 B” with tag “beauty”, body copy “K-뷰티 스킨케어 전문 브랜드”, count “1 program”, a “% 20%” badge, and “View Details”; “패션 브랜드 A” with tag “fashion”, body copy “MZ 세대를 위한 트렌디한 패션 브랜드”, count “1 program”, a “% 20%” badge, and “View Details”. Layout structure: fixed left sidebar, narrow top header area, warning banner below the header, then the marketplace title/search controls, then a 3-column card grid with two visible rows; large empty beige space remains below the cards. Visual state: authenticated, populated marketplace, no loading spinner, no error state. Verdict: pass. The screen renders successfully with readable text, intact buttons, visible navigation, and no obvious clipping, overlap, broken images, or full-page rendering failures.\\\"}\",\"usage\":{\"input_tokens\":22921,\"cached_input_tokens\":0,\"output_tokens\":1135,\"reasoning_output_tokens\":516}}"
+}

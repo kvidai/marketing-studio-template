@@ -1,0 +1,76 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+!.env.development
+!.env.staging
+# .env.production contains live keys — each fork provides their own
+# Supports both naming conventions: affy.env.production / .env.affy.production
+.env.production
+*.env.production
+.env.*.production
+!.env.example*
+!*.env.example
+!.env.*.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Turbo
+.turbo/
+
+# Prisma
+*.db
+*.db-journal
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Playwright
+playwright-report/
+test-results/
+output/
+.playwright-cli
+
+## oh-my-claudecode
+.omc/
+.omx/
+.sisyphus/
+.vercel
+
+# Local Netlify folder
+.netlify
+
+.stryker-tmp
+scheduled_tasks.lock
+coverage/
+.agent.lock
+
+# Campaigns — actual brand content is private per fork
+# Only campaigns/.example/ stays tracked as reference
+# campaigns/*/
+# !campaigns/.example/
+# !campaigns/.example/**
+
+# Campaign intermediate/render outputs
+# campaigns/*/work/
+# campaigns/*/assets/reference/

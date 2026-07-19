@@ -1,0 +1,6 @@
+packages:
+  - "packages/shared/*"
+  - "packages/*"
+  - "campaigns/*"
+ignoredBuiltDependencies:
+  - sharp

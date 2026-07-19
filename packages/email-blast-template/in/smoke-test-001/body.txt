@@ -1,0 +1,13 @@
+kvid.ai — marketing-studio smoke test
+
+This is an internal pipeline smoke test.
+If you received this email, the marketing-studio email-blast-template is correctly wired to AWS SES.
+
+Slug:      smoke-test-001
+Timestamp: 2026-05-09T00:00:00.000Z
+Channel:   email-blast-template → AWS SES
+
+No action required. You can safely ignore this message.
+
+--
+© 2026 kvid.ai — internal tooling
