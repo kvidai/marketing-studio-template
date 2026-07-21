@@ -1,4 +1,4 @@
-<!-- Source: epicmobile18/rules/contextual/docs/CLAUDE.md -->
+<!-- Source: marketing-studio-template/rules/contextual/docs/CLAUDE.md -->
 <!-- Version: 1.0.1 -->
 <!-- Last Updated: 2026-03-09 -->
 
@@ -16,9 +16,7 @@
 docs/
 ├── ui-screenshots/      # Key UI screenshots (update and commit on UI changes)
 ├── qa/                  # QA test cases
-├── api_schema/          # API schema documents
-├── payment/             # Payment system integration docs
-└── ai-query-list/       # AI conversation logs (by date)
+└── prompts/       # AI conversation logs (by date)
 ```
 
 ## Document Categories
@@ -36,11 +34,6 @@ docs/
 **Issues & Tasks**
 - Known issue docs
 - `task-breakdown.md` - task breakdown
-
-## Parallel Development (Multiple AI Agents)
-
-여러 AI agent가 동시에 같은 repo에서 작업할 때: `parallel-dev-workflow.md` 참조.
-핵심: 작업 scope가 겹치면 git worktree로 분리, `.env*` 파일 수동 복사 필수.
 
 ## Writing Rules
 

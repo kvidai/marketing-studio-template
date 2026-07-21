@@ -1,6 +1,7 @@
+## https://microsoft.github.io/apm/ 
 name: marketing-studio-template
 version: 1.0.0
-description: AI-assisted marketing content creation and channel publishing template
+description: AI-assisted marketing content creation and channel publishing template, APM project for kvidai-marketing-studio
 author: kvidai
 dependencies:
   apm:

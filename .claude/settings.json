@@ -1,0 +1,60 @@
+{
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+  },
+  "permissions": {
+    "allow": ["Bash(find:*)", "Bash(ls:*)"],
+    "deny": [
+      "Read(references/**)",
+      "Read(references_deprecated/**)",
+      "Read(**/references_deprecated/**)",
+      "Read(.env.local)",
+      "Read(.DS_Store)",
+      "Read(Thumbs.db)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
+  },
+  "plansDirectory": ".claude/plans",
+  "permissions_deprecated": {
+    "allow": [],
+    "deny": [
+      "Read(package-lock.json)"
+    ]
+  },
+  "project": {
+    "name": "KVIDAI",
+    "description": "AI-powered video content creation platform - Monorepo",
+    "documentation": {
+      "main_instructions": "CLAUDE.md"
+    }
+  },
+  "project_deprecated": {
+    "name": "video editing skills",
+    "description": "AI-powered video and image generation service with credit system",
+    "documentation": {
+      "main_instructions": "CLAUDE.md",
+      "payment": {
+        "dodopayments_api": "docs/payment/dodopayments-api-reference.txt",
+        "implementation_plan": "docs/payment/implementation-plan.md"
+      },
+      "api_schema": "docs/api_schema.md",
+      "i18n": "docs/i18n-implementation-plan.md"
+    }
+  },
+  "development": {},
+  "development_deprecated": {
+  },
+  "important_notes": [],
+  "important_notes_deprecated": [
+    "Always run 'npm run build' before committing",
+    "Use i18n for all user-facing text",
+    "Payment integration: Dodopayments (see docs/payment/)",
+    "V1 and V2 video models have different parameters"
+  ],
+  "references": ["https://code.claude.com/docs/ko/settings"],
+  "enabledPlugins_references": {
+  }
+}

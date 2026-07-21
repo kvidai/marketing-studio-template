@@ -1,4 +1,4 @@
-# CLAUDE.md — marketing-studio
+# marketing-studio
 
 AI coding agent guide for this monorepo.
 
@@ -93,7 +93,7 @@ pnpm -r typecheck
 
 ## Environment Variables
 
-Single source: `.env.production`. Loaded via `@marketing-studio/env` in every package.
+Single source: `.env.production` or `.env.{brandname}.production`. Loaded via `@marketing-studio/env` in every package.
 
 ```bash
 # Required (SES live):
@@ -143,6 +143,56 @@ packages/shared/send-push-kvidai/src/index.ts  → "PUSH STUB: kvidai push SDK n
 ```
 To unlock a stub: replace the throw in the corresponding `packages/shared/` file.
 
+## Skills (APM)
+
+Skills are managed via [Microsoft APM](https://github.com/microsoft/apm).
+
+```
+.agents/skills/kvidai-*/   ← installed by APM (codex target)
+.claude/skills/kvidai-*/   → symlink → .agents/skills/  (Claude Code compatibility)
+```
+
+### Install APM (once)
+
+Quickstart: https://microsoft.github.io/apm/quickstart/
+
+```bash
+# Linux / macOS
+curl -sSL https://aka.ms/apm-unix | sh
+
+# Windows
+# irm https://aka.ms/apm-windows | iex
+
+# Alternative (pip)
+# pip install apm-cli
+```
+
+### Install / Update Skills
+
+```bash
+cd /path/to/kvidai-marketing-studio
+
+# Install or update from apm.yml
+apm install --target codex
+
+# Recreate symlinks (first install or if removed)
+cd .claude/skills
+for skill in kvidai-media kvidai-preset kvidai-video-project kvidai-video-use; do
+  ln -sf ../../.agents/skills/$skill $skill
+done
+```
+
+### Registered Skills (`apm.yml`)
+
+| Skill | Description |
+|-------|-------------|
+| `kvidai-video-use` | Conversation-driven video editor (subtitles, cuts, color grade) |
+| `kvidai-video-project` | Create video projects + AI auto-edit |
+| `kvidai-media` | Media upload / management |
+| `kvidai-preset` | Preset CRUD |
+
+Source: `epicmobile18/kvidai-skills` (public) — installs from `main` branch.
+
 ## Plan Files
 
 Active plans: `.claude/plans/`
@@ -154,5 +204,4 @@ ls .claude/plans/*_wip_*.md   # in-progress — read first
 ## QA Tools
 
 - Card news visual QA: `.agents/skills/vision-checker/` (wired for Claude + Codex)
-- Pre-flight scope review: `.agents/skills/grill-me/`
 - Screenshot helpers: `scripts/screenshot-*.{ts,sh}`

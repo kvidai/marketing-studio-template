@@ -4,7 +4,7 @@ A monorepo for AI-assisted marketing content creation and automated channel publ
 
 Each package owns one complete marketing artifact. AI agents handle content quality; code handles publishing.
 
-**Brands**: kvid.ai + affy.ink
+**Brands**: brandA + brandB + ...
 
 ---
 
@@ -72,9 +72,9 @@ docs/channels/                # per-channel integration guides
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.production` and fill in your keys.
+Copy `.env.example` to `.env.production` or `.env.{brandname}` and fill in your keys.
 
-See `.env.example` for all available variables.
+See `.env.example` `.env.{examplebrand}` for all available variables.
 
 ---
 
