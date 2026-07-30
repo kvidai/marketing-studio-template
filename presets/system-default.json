@@ -1,0 +1,31 @@
+{
+  "name": "System Default (kvid.ai marketing)",
+  "presetId": "ms-system-default",
+  "description": "marketing-studio 기본 프리셋 — 신규 비디오 프로젝트 seed(voice/tone/color/scene). 브랜드별 복제해서 사용.",
+  "language": "ko",
+  "isPublic": false,
+  "tags": ["marketing-studio", "default"],
+  "config": {
+    "voice": {
+      "language": "ko",
+      "gender": "female",
+      "tone": "friendly-professional",
+      "speed": 1.0
+    },
+    "tone": {
+      "style": "clear, concise, benefit-first",
+      "audience": "general marketing audience"
+    },
+    "color": {
+      "primary": "#2563eb",
+      "secondary": "#0f172a",
+      "background": "#ffffff",
+      "accent": "#f59e0b"
+    },
+    "scene": {
+      "aspectRatio": "9:16",
+      "defaultDurationSec": 5,
+      "subtitle": true
+    }
+  }
+}
