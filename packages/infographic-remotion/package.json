@@ -1,0 +1,26 @@
+{
+  "name": "infographic-remotion",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "tsx src/render.ts",
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.382",
+    "@remotion/renderer": "4.0.382",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "4.0.382",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.382",
+    "@types/node": "^22.0.0",
+    "@types/react": "19.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

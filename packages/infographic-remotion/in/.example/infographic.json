@@ -1,0 +1,13 @@
+{
+  "title": "마케팅 자동화 효과",
+  "subtitle": "kvid.ai 도입 후",
+  "items": [
+    { "label": "제작 시간", "value": 80, "unit": "% 단축" },
+    { "label": "채널 커버리지", "value": 6, "unit": "개" },
+    { "label": "월 산출물", "value": 120, "unit": "건" }
+  ],
+  "accentColor": "#2563eb",
+  "bgColor": "#0f172a",
+  "textColor": "#ffffff",
+  "durationSec": 6
+}

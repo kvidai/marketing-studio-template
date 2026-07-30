@@ -33,7 +33,7 @@ marketing-studio/
 │   │   ├── publish-nodebb/        # NodeBB Write API client
 │   │   ├── publish-discourse/     # Discourse REST API client
 │   │   ├── upload-meta/           # Instagram + Facebook Graph API (STUB)
-│   │   ├── send-video-kvidai/     # @kvidai/cli wrapper (STUB)
+│   │   ├── send-video-kvidai/     # 위임 래퍼 — media upload + composition 조립 (agent/direct)
 │   │   ├── send-push-kvidai/      # kvidai web push (STUB)
 │   │   └── publish-reddit/        # Reddit OAuth API client (text/link/image/video)
 │   │
@@ -41,7 +41,8 @@ marketing-studio/
 │   ├── blog-post-template/        # Blog channel — code ready (instances TBD)
 │   ├── cardnews-template/         # Card news — render ready, upload STUB
 │   ├── reddit-post-template/      # Reddit channel — code ready (script app TBD)
-│   ├── video-template/            # SCAFFOLD — blocked on @kvidai/cli sdk mcp
+│   ├── video-template/            # 비디오 채널 — agent 하이브리드 / direct 조립
+│   ├── infographic-remotion/      # Remotion 인포그래픽 클립 (부분 MP4/PNG)
 │   └── push-template/             # SCAFFOLD — blocked on kvidai web push SDK
 │
 ├── context/                       # AI agent specs, brief templates, brand rules
@@ -119,6 +120,9 @@ REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USERNAME, REDDIT_PASSWORD, REDDIT
 - **Card news**: `/new-cardnews` → creates `packages/cardnews-template/in/{slug}/`
 - **Reddit**: `/new-reddit-post` → creates `packages/reddit-post-template/in/{slug}/`
 
+**Video** (대화형 — "영상 만들어줘"):
+- `/new-video <slug>` → ref 전처리 → kvid.ai 영상 생성 (agent/direct 선택). 상세: `.claude/skills/new-video/SKILL.md`, `docs/channels/kvid-composition-guide.md`.
+
 Then follow `context/WORKFLOW-INDEX.md` → each channel's `WORKFLOW.md`.
 
 ## Channel Status
@@ -130,7 +134,7 @@ Then follow `context/WORKFLOW-INDEX.md` → each channel's `WORKFLOW.md`.
 | Blog (Discourse) | ✅ Ready | ✅ Ready | Instance not deployed |
 | Card News (render) | ✅ Live | STUB | Meta App approval |
 | Reddit | ✅ Ready | ✅ Ready | script app 발급 필요 |
-| Video | STUB | STUB | @kvidai/cli sdk mcp |
+| Video | ✅ agent/direct 조립 | export 수동 | 없음 (kvid.ai 에디터 export) |
 | Push | ✅ CLI ready (send STUB) | STUB | kvidai web push SDK |
 
 ## STUB Pattern
@@ -138,7 +142,6 @@ Then follow `context/WORKFLOW-INDEX.md` → each channel's `WORKFLOW.md`.
 STUBs throw immediately with a descriptive error:
 ```
 packages/shared/upload-meta/src/index.ts       → "META STUB: configure Meta App first"
-packages/shared/send-video-kvidai/src/index.ts → "VIDEO STUB: @kvidai/cli not yet wired"
 packages/shared/send-push-kvidai/src/index.ts  → "PUSH STUB: kvidai push SDK not yet wired"
 ```
 To unlock a stub: replace the throw in the corresponding `packages/shared/` file.

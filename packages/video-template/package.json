@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@marketing-studio/env": "workspace:*",
     "@marketing-studio/send-video-kvidai": "workspace:*"
   },
   "devDependencies": {
