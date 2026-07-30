@@ -31,8 +31,8 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 
 ### 0. 모드 선택 (유저에게 물어봄) ⚠️
 영상 만들기 시작 시 **AskUserQuestion 으로 유저에게 조립 방식을 물어본다**:
-- **agent (풍성·자동)**: 에이전트가 대본·씬구성·나레이션·키워드오버레이 등 창의 요소까지. 내 손 덜 감, 결과 다이내믹. (예: project 484)
-- **direct (정확·통제)**: 내가 씬·자막·배치를 정확히 지정. 예측가능·단순. (예: project 477)
+- **agent (풍성·자동)**: 에이전트가 대본·씬구성·나레이션·키워드오버레이 등 창의 요소까지. 내 손 덜 감, 결과 다이내믹. (예: (예시 프로젝트))
+- **direct (정확·통제)**: 내가 씬·자막·배치를 정확히 지정. 예측가능·단순. (예: (예시 프로젝트))
 선택에 따라 video.json 형식이 갈림(agent = message+attach / direct = scenes).
 
 ### 1. 스캐폴드
@@ -45,6 +45,19 @@ mkdir -p campaigns/<slug>/assets campaigns/<slug>/refs
 - 읽기: `references/brand/`(항상) + brief.md 의 `참고 세트:` 에 지정된 `references/<세트>/` + `campaigns/<slug>/{brief.md, refs/}` + 채팅 첨부.
 - **이미지는 Read 로 직접 봐서** 각 이미지가 뭘 보여주는지 파악. PDF/문서로 제품 스펙·핵심 기능·셀링포인트·브랜드 톤 추출.
 - 자료 부족하면 유저에게 2~3개만 되물음.
+
+### 2.5 프리셋 결정/생성 (⚠️ 비디오 생성 **전** 필수)
+프리셋 = 재사용 가능한 기본값(**ElevenLabs 음성** voiceId/모델/설정 + 톤 + 색 + 씬). **먼저 프리셋을 고정**해야 (a) 결과 좋은 설정을 나중에 재사용, (b) 같은 컨셉/시리즈 영상들의 **통일성**(같은 목소리·톤) 유지.
+```bash
+SKILL=.claude/skills/kvidai-preset/scripts/kvidai-preset-client.mjs
+node $SKILL list                          # 이 컨셉에 맞는 기존 프리셋 있나?
+```
+- **있으면 재사용**: 그 presetId 를 video.json 에.
+- **없으면 새로 생성** — `presets/<id>.json` 작성 후 `node $SKILL create presets/<id>.json`:
+  - `config.voice`: **ElevenLabs** `{ voiceId, modelId:"eleven_multilingual_v2", speed, style, stability, similarityBoost }` (voiceId 는 기존 프리셋 `get`으로 획득, 예 한국어 `<ElevenLabs voiceId>`).
+  - `config.tone / color / scene`: 브랜드 톤·팔레트(`references/brand/`)·비율/길이.
+  - (선택) **음성 확인**: `kvidai-ai voice --text "샘플" --voice-id <id> --out /tmp/s.mp3` 로 미리 들어보고 좋으면 그 voiceId/설정을 프리셋에 고정.
+- 상세 스키마: `presets/CLAUDE.md`.
 
 ### 3. 특수 자산 준비 (순차)
 - **인포그래픽**(필요 시): `campaigns/<slug>/infographic.json` → `pnpm --filter infographic-remotion render -- --campaign=<slug> --name=infographic-01` → `assets/infographic-01.mp4` (또는 정적 PNG).

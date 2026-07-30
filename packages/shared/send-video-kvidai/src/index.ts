@@ -201,8 +201,11 @@ async function agentGenerate(
   projectId: number,
   message: string,
   attachments: { cdnUrl: string; mimeType: string; filename: string }[],
+  presetId?: string,
 ): Promise<string> {
   const args = ['agent-generate', String(projectId), message];
+  // ⚠️ 프리셋(voice/tone)은 agent-generate 의 presetId 로 적용됨 (create-project 만으론 안 됨).
+  if (presetId) args.push('--preset-id', presetId);
   for (const a of attachments) {
     args.push('--cdn-url', a.cdnUrl, '--mime', a.mimeType, '--filename', a.filename);
   }
@@ -248,8 +251,8 @@ export async function generateWithAgent(cfg: AgentConfig): Promise<AgentResult> 
   process.stderr.write(cfg.projectId ? `[video] reusing project ${projectId}\n` : `[video] project ${projectId} created\n`);
 
   // 3. 에이전트 실행 (대본/씬/생성/조립) — 1~3분
-  process.stderr.write(`[video] agent generating (attachments: ${attachments.length})...\n`);
-  const editorUrl = await agentGenerate(projectId, cfg.message, attachments);
+  process.stderr.write(`[video] agent generating (attachments: ${attachments.length}, preset: ${cfg.presetId ?? 'default'})...\n`);
+  const editorUrl = await agentGenerate(projectId, cfg.message, attachments, cfg.presetId);
 
   // 4. 스냅샷
   const composition = await getProject(projectId);
