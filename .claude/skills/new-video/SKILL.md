@@ -23,7 +23,7 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 
 - **raw ref(이미지 바이트/PDF 전문)는 절대 에이전트에 안 보냄.** 내가 소화해서 압축 텍스트 + cdnUrl 몇 개만.
 - **씬/대본은 100% 에이전트** (system prompt가 담당). 나는 자산 "추천 용도"만 힌트.
-- voice는 에이전트가 생성 → kvidai-ai TTS는 이 모드에선 불필요(정밀 나레이션 필요할 때만 옵션).
+- voice는 에이전트가 생성 → `kvid voice`(TTS)는 이 모드에선 불필요(정밀 나레이션 필요할 때만 옵션).
 
 ## ⛔ 동시성
 에이전트 = 유저당 **1 run**(409). 같은 계정 /new-video 동시 2개 금지. 인포그래픽 등 사전생성은 에이전트 실행 **전에** 순차로.
@@ -51,14 +51,13 @@ mkdir -p campaigns/<slug>/assets campaigns/<slug>/refs
 ### 2.5 프리셋 결정/생성 (⚠️ 비디오 생성 **전** 필수)
 프리셋 = 재사용 가능한 기본값(**ElevenLabs 음성** voiceId/모델/설정 + 톤 + 색 + 씬). **먼저 프리셋을 고정**해야 (a) 결과 좋은 설정을 나중에 재사용, (b) 같은 컨셉/시리즈 영상들의 **통일성**(같은 목소리·톤) 유지.
 ```bash
-SKILL=.claude/skills/kvidai-preset/scripts/kvidai-preset-client.mjs
-node $SKILL list                          # 이 컨셉에 맞는 기존 프리셋 있나?
+kvid preset list                          # 이 컨셉에 맞는 기존 프리셋 있나? (kvid CLI — 스킬 설치 불필요)
 ```
 - **있으면 재사용**: 그 presetId 를 video.json 에.
-- **없으면 새로 생성** — `presets/<id>.json` 작성 후 `node $SKILL create presets/<id>.json`:
-  - `config.voice`: **ElevenLabs** `{ voiceId, modelId:"eleven_multilingual_v2", speed, style, stability, similarityBoost }` (voiceId 는 기존 프리셋 `get`으로 획득, 예 한국어 `m3gJBS8OofDJfycyA2Ip`).
+- **없으면 새로 생성** — `presets/<id>.json` 작성 후 `kvid preset create presets/<id>.json`:
+  - `config.voice`: **ElevenLabs** `{ voiceId, modelId:"eleven_multilingual_v2", speed, style, stability, similarityBoost }` (voiceId 는 기존 프리셋 `kvid preset get <id>` 로 획득, 예 한국어 `m3gJBS8OofDJfycyA2Ip`).
   - `config.tone / color / scene`: 브랜드 톤·팔레트(`references/brand/`)·비율/길이.
-  - (선택) **음성 확인**: `kvidai-ai voice --text "샘플" --voice-id <id> --out /tmp/s.mp3` 로 미리 들어보고 좋으면 그 voiceId/설정을 프리셋에 고정.
+  - (선택) **음성 확인**: `kvid voice generate "샘플" --voice-id <id> --output /tmp/s.mp3` 로 미리 들어보고 좋으면 그 voiceId/설정을 프리셋에 고정.
 - 상세 스키마: `presets/CLAUDE.md`.
 
 ### 3. 특수 자산 준비 (순차)
