@@ -47,16 +47,16 @@ cd marketing-studio
   ```
 - **Claude Code(에이전트)에게**: 이 폴더에서 Claude Code 를 열고 **"`docs/SETUP.md` 보고 설치해줘"** → 에이전트가 같은 문서로 설치
 
-### 3단계 — 키 설정
-```bash
-cp .env.example .env.production
-```
-`.env.production` 에 입력:
-```env
-KVIDAI_API_KEY=<app.kvid.ai/settings 발급 키>
-KVIDAI_USER_EMAIL=<크레딧 계정 이메일>
-KVIDAI_BASE_URL=https://api.kvid.ai
-```
+### 3단계 — 키 설정 (셋 중 택1, 제일 쉬운 걸로)
+- **A. 원클릭(권장)**: `pnpm setup` → 키/이메일 물어보면 붙여넣기. `.env.production` 자동 생성·기입
+  ```bash
+  pnpm setup                                   # 대화형
+  # 또는 pnpm setup --api-key <KEY> --email <EMAIL>   # 한 줄로
+  ```
+- **B. Claude Code 에게**: "내 kvid 키 `<KEY>`, 이메일 `<EMAIL>` 로 설정해줘" → 에이전트가 `.env.production` 작성
+- **C. 수동**: `cp .env.example .env.production` 후 `KVIDAI_API_KEY` / `KVIDAI_USER_EMAIL` 입력
+
+> `.env.production` 은 **실제 키**라 gitignore 됨 — **커밋되지 않는다**(각자 로컬에만). `KVIDAI_BASE_URL` 은 선택(기본 api.kvid.ai).
 > 영상 3가지 모드가 전부 **`kvid` CLI 만으로 동작**한다 — 별도 설치 불필요:
 > - **agent (기본)**: 압축 브리프 + 첨부만 주면 kvid.ai 에이전트가 대본·씬·미디어·조립까지 자동
 > - **direct (확장)**: 씬을 정확히 지정해 composition 직접 조립

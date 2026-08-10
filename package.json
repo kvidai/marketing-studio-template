@@ -2,6 +2,7 @@
   "name": "marketing-studio",
   "private": true,
   "scripts": {
+    "setup": "node scripts/setup.mjs",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",

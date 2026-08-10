@@ -62,7 +62,11 @@ pnpm install
 
 ## 3. 환경 변수 설정
 
-`.env.production` 파일을 루트에 생성한다. `.env.example`을 템플릿으로 사용:
+> **가장 쉬운 길**: `pnpm setup` — kvid 키/이메일을 물어보면 붙여넣기 → `.env.production` 자동 생성·기입.
+> (비대화형: `pnpm setup --api-key <KEY> --email <EMAIL>`) · Claude Code 에겐 "kvid 키 …로 설정해줘".
+> ⚠️ `.env.production` 은 실제 키라 **gitignore** 됨 — 커밋되지 않는다(각자 로컬).
+
+수동으로 하려면 — `.env.production` 파일을 루트에 생성한다. `.env.example`을 템플릿으로 사용:
 
 ```bash
 cp .env.example .env.production
