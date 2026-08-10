@@ -213,10 +213,13 @@ export function buildComposition(plan: ScenePlan, assets: AssetIndex) {
     .filter((t) => t.length)
     .map(track);
 
+  // ⚠️ durationInFrames(composition 총 길이) 누락 시 kvid.ai 에디터 타임라인 길이가 0 으로 잡혀
+  //   프로젝트가 비어 보인다. cursor = 마지막 씬까지의 누적 프레임 = 전체 길이.
   return {
     fps,
     compositionWidth: width,
     compositionHeight: height,
+    durationInFrames: cursor,
     tracks,
     items,
     assets: assetMap,

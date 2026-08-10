@@ -9,6 +9,7 @@ allowed-tools: Bash, Write, Edit, Read
 유저의 "○○ 영상 만들어줘" 요청을 받아, **Claude(나)가 ref를 전처리**하고 **kvid 에이전트가 대본·씬·생성·조립**하는 하이브리드로 영상을 만든다. 유저는 web editor에서 확인/export.
 
 > ⚠️ **조립 전 필독**: `docs/channels/kvid-composition-guide.md` (인포그래픽 yuv420p·첨부자산 준비 등).
+> ⛔ **독립 생성 원칙 필독**: `.claude/rules/video-generation-rules.md` — 새 영상은 이번 references 만으로. 지시 없이 기존 캠페인 결과·다른 family 코드를 재사용하지 않는다(폴더 구조 관례까지만 허용).
 
 ## ⛔ 역할 경계 (2026-07-30 확정)
 kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모든 ref를 못 받음. 그래서:
@@ -31,8 +32,8 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 
 ### 0. 모드 선택 (유저에게 물어봄) ⚠️
 영상 만들기 시작 시 **AskUserQuestion 으로 유저에게 조립 방식을 물어본다**:
-- **agent (풍성·자동)**: 에이전트가 대본·씬구성·나레이션·키워드오버레이 등 창의 요소까지. 내 손 덜 감, 결과 다이내믹. (예: (예시 프로젝트))
-- **direct (정확·통제)**: 내가 씬·자막·배치를 정확히 지정. 예측가능·단순. (예: (예시 프로젝트))
+- **agent (풍성·자동)**: 에이전트가 대본·씬구성·나레이션·키워드오버레이 등 창의 요소까지. 내 손 덜 감, 결과 다이내믹. (예: project 484)
+- **direct (정확·통제)**: 내가 씬·자막·배치를 정확히 지정. 예측가능·단순. (예: project 477)
 선택에 따라 video.json 형식이 갈림(agent = message+attach / direct = scenes).
 
 ### 1. 스캐폴드
@@ -54,7 +55,7 @@ node $SKILL list                          # 이 컨셉에 맞는 기존 프리�
 ```
 - **있으면 재사용**: 그 presetId 를 video.json 에.
 - **없으면 새로 생성** — `presets/<id>.json` 작성 후 `node $SKILL create presets/<id>.json`:
-  - `config.voice`: **ElevenLabs** `{ voiceId, modelId:"eleven_multilingual_v2", speed, style, stability, similarityBoost }` (voiceId 는 기존 프리셋 `get`으로 획득, 예 한국어 `<ElevenLabs voiceId>`).
+  - `config.voice`: **ElevenLabs** `{ voiceId, modelId:"eleven_multilingual_v2", speed, style, stability, similarityBoost }` (voiceId 는 기존 프리셋 `get`으로 획득, 예 한국어 `m3gJBS8OofDJfycyA2Ip`).
   - `config.tone / color / scene`: 브랜드 톤·팔레트(`references/brand/`)·비율/길이.
   - (선택) **음성 확인**: `kvidai-ai voice --text "샘플" --voice-id <id> --out /tmp/s.mp3` 로 미리 들어보고 좋으면 그 voiceId/설정을 프리셋에 고정.
 - 상세 스키마: `presets/CLAUDE.md`.
@@ -80,12 +81,15 @@ node $SKILL list                          # 이 컨셉에 맞는 기존 프리�
 {
   "mode": "agent",
   "presetId": "<선택>",
-  "message": "제품: (제품명·핵심 스펙). 핵심 셀링포인트: (기능1, 기능2, 기능3). 브랜드톤: (톤). 30~60초 9:16 광고 숏츠, 한국어 나레이션+자막 만들어줘.\n첨부 자산(활용 추천):\n- hero.jpg: (이 이미지가 뭘 보여주는지) → 오프닝\n- feature1.jpg: (설명) → (강조 포인트)\n- infographic-01.png: (설명) → 스펙 씬",
-  "attach": ["assets/hero.jpg", "assets/feature1.jpg", "assets/infographic-01.png"]
+  "message": "제품: (제품/서비스명 + 핵심 스펙). 핵심 셀링포인트: (기능1, 기능2, 기능3). 브랜드톤: (톤). 30~60초 9:16 광고 숏츠 만들어줘.\n첨부 자산(순서대로 활용 추천):\n- hero.jpg: (이 이미지가 뭘 보여주는지) → (추천 용도)\n- feature.jpg: (설명) → (추천 용도)\n- infographic-01.mp4: (설명) → 스펙 씬",
+  "attach": ["assets/hero.jpg", "assets/feature.jpg", "assets/infographic-01.mp4"]
 }
 ```
 - **message = 압축된 제품지식 + 자산 설명/추천용도.** 씬 순서·대본은 쓰지 말 것(에이전트 몫). 수 KB 이내(raw ref 금지) → 70k 훨씬 밑.
 - `attach` = 첨부할 로컬 파일. 에이전트가 `use_uploaded_asset` 으로 배치.
+- 💡 **message 는 핵심 셀링포인트 3~6개 + 이미지별 한 줄 추천용도**로 압축 권장(길이 하드리밋은 없음). 제원표 전문 나열은 대본에 불필요 — 필요하면 에이전트가 알아서 요약.
+- ⚠️ **첨부 이미지가 있으면 "N분할" 같은 표현을 피할 것.** 과거 서버가 message 속 "3분할"의 "분"을 "3분(minutes)"으로 오인해 long-video 경로로 오라우팅 → 첨부를 안 쓴 버그가 있었음(2026-07-31 플랫폼 수정됨). 30초 등 **짧은 광고는 정상 배치**됨.
+- ⛔ **아직 미지원**: 진짜 긴 영상(실제 "3분"+ 등) + 첨부 이미지 배치는 long-video 경로가 첨부를 안 써서 보장 안 됨(추후 기능).
 
 ### 5. 실행
 ```bash
@@ -100,4 +104,13 @@ pnpm --filter video-template generate -- --campaign=<slug>             # 업로�
 ## direct 모드 (특수 케이스 옵션)
 제품 사진을 **정확한 위치에** 배치해야 하고 에이전트 배치가 미덥지 않을 때만. video.json 을 scene plan(`{ "scenes":[{durationSec,background,visual,voice,captions}] }`)으로 작성 → Claude가 composition 직접 조립(에이전트 미사용). 상세: `docs/channels/kvidai-video.md`.
 
-설계: `.claude/plans/20260728_todo_skills-rewire-video-composition.md`.
+## cardnews 모드 (포스터 → 모션 카드뉴스 → 에디터)
+"이 포스터로 **카드뉴스 영상** 만들어줘 (에디터에 뜨게)" 요청. cardnews-template(정적 JPG·인스타 채널)이 아니라 이 경로다.
+1. 포스터 분석 → 씬 콘텐츠 `campaigns/<slug>/<family>-cardnews.json` 작성 + 포스터 오브젝트 크롭(계열 `scripts/*-assets.cjs` 패턴).
+2. **무음 마스터** 렌더: `pnpm --filter infographic-remotion render-sample (예시) -- --campaign=<slug> --name=cardnews-silent`.
+3. (선택) 씬별 나레이션 → `assets/voice-kvid/voice{N}.mp3` (씬 앞 리드인 무음 포함 — `scripts/build-kvid-voice.mjs`).
+4. `video.json` = `{ "mode":"cardnews", "family":"<family>", "background":"#...", "voiceDir":"assets/voice-kvid" }`.
+5. `pnpm --filter video-template generate -- --campaign=<slug> --build-only`(무료 확인) → 정상이면 플래그 없이 실행.
+- 씬 개수 = `<family>-cardnews.json` scenes 수(references 에 따라 1~N). 상세: `packages/video-template/CLAUDE.md`.
+
+설계: `.claude/plans/20260728_todo_skills-rewire-video-composition.md`, `.claude/plans/20260807_wip_cardnews-to-editor-composition.md`.

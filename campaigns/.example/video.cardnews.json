@@ -1,0 +1,9 @@
+{
+  "//": "cardnews 모드 예시 — 이 내용을 video.json 으로 두고 실행. 상세: packages/video-template/CLAUDE.md",
+  "//1": "선행: (1) sample-cardnews.json 작성  (2) 무음 마스터 렌더 → out/cardnews-silent.mp4",
+  "//2": "  pnpm --filter infographic-remotion render-sample -- --campaign=.example --name=cardnews-silent",
+  "mode": "cardnews",
+  "family": "sample",
+  "master": "out/cardnews-silent.mp4",
+  "voiceDir": "assets/voice-kvid"
+}

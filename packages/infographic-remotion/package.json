@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "render": "tsx src/render.ts",
+    "render-sample": "tsx src/render-sample-cardnews.ts",
     "studio": "remotion studio src/index.ts",
     "typecheck": "tsc --noEmit"
   },

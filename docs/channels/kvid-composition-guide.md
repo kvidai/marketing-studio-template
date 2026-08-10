@@ -1,7 +1,7 @@
 # kvid.ai Composition — 필수 설정 & 함정 (필독)
 
 kvid CLI/스킬로 영상을 **직접 조립**(에이전트 없이)할 때 반드시 지켜야 하는 설정 모음.
-전부 `packages/shared/send-video-kvidai`(composition 빌더)와 `packages/infographic-remotion`(렌더)에 **이미 구현**돼 있음 — 이 문서는 **왜 그런지**의 근거이자 회귀 방지용. (2026-07-29, 예시 제품 광고 디버깅에서 도출)
+전부 `packages/shared/send-video-kvidai`(composition 빌더)와 `packages/infographic-remotion`(렌더)에 **이미 구현**돼 있음 — 이 문서는 **왜 그런지**의 근거이자 회귀 방지용. (실제 광고 제작 디버깅에서 도출)
 
 ---
 

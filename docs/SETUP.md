@@ -11,6 +11,8 @@
 | **Node.js** | 22.x | `node --version` |
 | **pnpm** | 10.x | `pnpm --version` |
 | **Python** | 3.11+ | `python3 --version` |
+| **ffmpeg** | 최신 | `ffmpeg -version` |
+| **kvid CLI** | 0.8.0+ | `kvid --version` |
 
 ### Node.js 설치 (nvm 권장)
 ```bash
@@ -23,6 +25,18 @@ nvm use 22
 ```bash
 npm install -g pnpm@10
 ```
+
+### ffmpeg 설치 (카드뉴스 씬 클립 분할·음성 합성)
+```bash
+# macOS: brew install ffmpeg   /   Ubuntu: sudo apt-get install -y ffmpeg
+```
+
+### kvid CLI 설치 (영상 채널 — kvid.ai 업로드·프로젝트·TTS)
+```bash
+curl https://cli.kvid.ai/install -fsS | bash    # kvidai + kvid alias
+kvid setup                                        # 또는 KVIDAI_API_KEY 환경변수
+```
+영상 파이프라인(video-template)은 `kvid` CLI 로 업로드·프로젝트 생성·composition 교체·TTS 를 수행한다. `kvid --version` 이 나와야 한다.
 
 ---
 

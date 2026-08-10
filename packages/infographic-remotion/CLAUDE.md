@@ -1,6 +1,11 @@
 # infographic-remotion
 
-Remotion **인포그래픽 클립 전용** 패키지. 부분 MP4 만 렌더해 kvid.ai composition 에 삽입한다 (통짜 완성영상 금지 — 그건 kvid.ai 에디터 담당).
+Remotion 렌더 패키지. 두 용도:
+1. **인포그래픽 클립**(`Infographic`) — 부분 MP4 를 kvid.ai composition 에 삽입.
+2. **모션 카드뉴스 family**(예시 `SampleCardNews`) — 포스터형 카드뉴스를 씬별 모션으로 렌더 → `video-template` cardnews 모드가 씬별 클립으로 잘라 composition 에 얹는다.
+
+> **새 카드뉴스 만들기**: `src/sample-cardnews/` 를 복제해 톤/모티프/씬을 **처음부터** 자기 포스터에 맞게 설계한다(기존 family 코드 복붙 금지 — `.claude/rules/video-generation-rules.md`). `Root.tsx` 에 등록 + `render-<family>` CLI 추가. 상세 흐름: `packages/video-template/CLAUDE.md`.
+> QR·마스코트 등 포스터 자산은 `public/<family>/` 에 두고 `staticFile` 로 참조(예시는 자산 없이 QR 플레이스홀더).
 
 ## Entry points
 - `src/index.ts` — registerRoot

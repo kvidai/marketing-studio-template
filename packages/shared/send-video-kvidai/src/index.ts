@@ -40,64 +40,99 @@ function findMonorepoRoot(startDir: string): string {
 }
 
 const ROOT = findMonorepoRoot(process.cwd());
-const MEDIA_CLIENT = resolve(ROOT, '.claude/skills/kvidai-media/scripts/kvidai-media-client.mjs');
+// 직접 조립(upload/create/replace-composition/get)·voice 는 배포된 kvid CLI 로.
+// KVIDAI_CLI_BIN 로 바이너리 경로 오버라이드 가능(릴리스 전 로컬 dist 검증용). 기본은 PATH 의 `kvid`.
+const KVID_BIN = process.env.KVIDAI_CLI_BIN ?? 'kvid';
+// agent-generate 는 아직 CLI video generate 가 preset+다중첨부를 못 다뤄 스킬을 유지한다.
 const VP_CLIENT = resolve(ROOT, '.claude/skills/kvidai-video-project/scripts/kvidai-client.mjs');
 
-function assertSkillsInstalled(): void {
-  for (const p of [MEDIA_CLIENT, VP_CLIENT]) {
-    if (!existsSync(p)) {
-      throw new Error(
-        `kvidai skill client 없음: ${p}\nAPM 설치 필요 — CLAUDE.md "Install / Update Skills" 참고.`,
-      );
-    }
+function assertAgentSkillInstalled(): void {
+  if (!existsSync(VP_CLIENT)) {
+    throw new Error(
+      `kvidai-video-project 스킬 없음: ${VP_CLIENT}\nAPM 설치 필요 — CLAUDE.md "Install / Update Skills" 참고.`,
+    );
   }
 }
 
-// ── 스킬 CLI 호출 헬퍼 (stdout=결과, stderr=진행상황) ─────────────────────────
+// ── 프로세스 호출 헬퍼 (stdout=결과, stderr=진행상황) ─────────────────────────
 
+function runProc(cmd: string, args: string[], label: string): Promise<string> {
+  return new Promise((res, rej) => {
+    const child = spawn(cmd, args, { env: process.env });
+    let out = '';
+    child.stdout.on('data', (d) => { out += d.toString(); });
+    child.stderr.on('data', (d) => process.stderr.write(d));
+    child.on('error', (e) =>
+      rej(new Error(`${label} 실행 실패: ${e.message}${cmd === KVID_BIN ? ' — kvid CLI 미설치? curl https://cli.kvid.ai/install -fsS | bash' : ''}`)),
+    );
+    child.on('close', (code) => (code === 0 ? res(out.trim()) : rej(new Error(`${label} exited with code ${code}`))));
+  });
+}
+
+/** kvid CLI 호출 (--json). stdout 마지막 JSON 파싱. */
+async function runKvid<T = unknown>(args: string[]): Promise<T> {
+  const raw = await runProc(KVID_BIN, [...args, '--json'], `kvid ${args[0]}`);
+  const start = raw.lastIndexOf('\n{') >= 0 ? raw.indexOf('{', raw.lastIndexOf('\n{')) : raw.indexOf('{');
+  const jsonStr = start >= 0 ? raw.slice(start) : raw;
+  try {
+    return JSON.parse(jsonStr) as T;
+  } catch {
+    throw new Error(`kvid ${args[0]} 출력 JSON 파싱 실패: ${raw.slice(0, 200)}`);
+  }
+}
+
+// 확장자 → MIME (CLI upload 는 mimeType 을 안 돌려줘 로컬에서 유추. 에이전트 첨부 --mime 용)
+function mimeFromExt(p: string): string {
+  const e = p.toLowerCase().split('.').pop() ?? '';
+  const m: Record<string, string> = {
+    jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif',
+    mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm',
+    mp3: 'audio/mpeg', wav: 'audio/wav', m4a: 'audio/mp4',
+    pdf: 'application/pdf', txt: 'text/plain',
+  };
+  return m[e] ?? 'application/octet-stream';
+}
+
+// ── kvid CLI 위임 ─────────────────────────────────────────────────────────────
+
+/** kvid upload → { cdnUrl, mimeType(유추), size } */
+async function uploadMedia(filePath: string): Promise<{ cdnUrl: string; mimeType: string; size: number; fileId?: number }> {
+  const d = await runKvid<{ cdnUrl?: string; size?: number }>(['upload', filePath]);
+  if (!d.cdnUrl) throw new Error(`kvid upload 응답에 cdnUrl 없음`);
+  return { cdnUrl: d.cdnUrl, mimeType: mimeFromExt(filePath), size: d.size ?? 0 };
+}
+
+/** kvid project create → projectId */
+async function createProject(name: string, presetId?: string): Promise<number> {
+  const d = await runKvid<{ id?: number }>(['project', 'create', name, ...(presetId ? ['--preset-id', presetId] : [])]);
+  if (!Number.isFinite(d.id)) throw new Error('kvid project create 가 숫자 id 를 반환하지 않음');
+  return d.id as number;
+}
+
+/** kvid project replace-composition — composition 전체 교체 */
+async function replaceComposition(projectId: number, composition: unknown): Promise<void> {
+  const tmp = resolve(tmpdir(), `kvidai-composition-${projectId}.json`);
+  writeFileSync(tmp, JSON.stringify(composition));
+  await runKvid(['project', 'replace-composition', String(projectId), tmp]);
+}
+
+/** kvid project get → composition 스냅샷 */
+async function getProject(projectId: number): Promise<unknown> {
+  return runKvid(['project', 'get', String(projectId)]);
+}
+
+// ── 스킬 위임 (agent-generate 전용) ────────────────────────────────────────────
 function runSkill(script: string, args: string[]): Promise<string> {
   return new Promise((res, rej) => {
     const child = spawn('node', [script, ...args], { env: process.env });
     let out = '';
-    child.stdout.on('data', (d) => {
-      out += d.toString();
-    });
+    child.stdout.on('data', (d) => { out += d.toString(); });
     child.stderr.on('data', (d) => process.stderr.write(d));
     child.on('error', rej);
     child.on('close', (code) =>
       code === 0 ? res(out.trim()) : rej(new Error(`${basename(script)} ${args[0]} exited with code ${code}`)),
     );
   });
-}
-
-// ── 개별 스킬 위임 ─────────────────────────────────────────────────────────────
-
-/** kvidai-media upload-file → { cdnUrl, mimeType } */
-async function uploadMedia(filePath: string): Promise<{ cdnUrl: string; mimeType: string }> {
-  const raw = await runSkill(MEDIA_CLIENT, ['upload-file', filePath]);
-  const d = JSON.parse(raw) as { cdnUrl?: string; mimeType?: string };
-  if (!d.cdnUrl) throw new Error(`upload-file 응답에 cdnUrl 없음: ${raw}`);
-  return { cdnUrl: d.cdnUrl, mimeType: d.mimeType ?? 'application/octet-stream' };
-}
-
-/** video-project create-project → projectId */
-async function createProject(name: string, presetId?: string): Promise<number> {
-  const args = ['create-project', name, ...(presetId ? ['--preset-id', presetId] : [])];
-  const id = Number(await runSkill(VP_CLIENT, args));
-  if (!Number.isFinite(id)) throw new Error('create-project 가 숫자 projectId 를 반환하지 않음');
-  return id;
-}
-
-/** video-project replace-composition — composition 전체 교체 */
-async function replaceComposition(projectId: number, composition: unknown): Promise<void> {
-  const tmp = resolve(tmpdir(), `kvidai-composition-${projectId}.json`);
-  writeFileSync(tmp, JSON.stringify(composition));
-  await runSkill(VP_CLIENT, ['replace-composition', String(projectId), tmp]);
-}
-
-/** video-project get-project → composition 스냅샷 */
-async function getProject(projectId: number): Promise<unknown> {
-  return JSON.parse(await runSkill(VP_CLIENT, ['get-project', String(projectId)]));
 }
 
 // ── 오케스트레이션 (직접 조립) ─────────────────────────────────────────────────
@@ -136,9 +171,14 @@ function collectFiles(plan: ScenePlan): { file: string; type: 'image' | 'video' 
 
 export async function assembleProject(cfg: AssembleConfig): Promise<AssembleResult> {
   if (!process.env.KVIDAI_API_KEY) throw new Error('KVIDAI_API_KEY 미설정');
-  assertSkillsInstalled();
+  // 직접 조립은 kvid CLI 만 사용(스킬 불필요). CLI 부재 시 runKvid 가 설치 안내로 실패.
 
   // 1. 자산 업로드 → assetIndex
+  // ⚠️ assetId 는 조립(=프로젝트)마다 고유 토큰을 붙인다. kvid.ai 에디터가 미디어를 URL 이 아니라
+  //   assetId 로 클라이언트 캐싱하는 정황이 있어(실측), `as_1` 처럼 프로젝트마다 반복되면 새 프로젝트가
+  //   이전 프로젝트의 동일 assetId 캐시(다른 영상)를 그대로 보여준다 — 캐시를 지워야만 고쳐졌다.
+  //   토큰을 매 실행 유니크하게 주면 캐시가 충돌하지 않는다. (근본 수정은 플랫폼의 URL 기준 cache-bust)
+  const runTok = Date.now().toString(36);
   const files = collectFiles(cfg.plan);
   const assetIndex: AssetIndex = new Map();
   const uploaded: UploadedAsset[] = [];
@@ -148,7 +188,7 @@ export async function assembleProject(cfg: AssembleConfig): Promise<AssembleResu
     if (!existsSync(path)) throw new Error(`자산 없음: ${path}`);
     process.stderr.write(`[video] uploading ${file}...\n`);
     const { cdnUrl } = await uploadMedia(path);
-    const assetId = `as_${i + 1}`;
+    const assetId = `as_${runTok}_${i + 1}`;
     // 이미지 원본 크기 판독 (contain 배치용). 실패해도 진행(그 경우 full canvas).
     let width: number | undefined;
     let height: number | undefined;
@@ -200,14 +240,15 @@ export async function assembleProject(cfg: AssembleConfig): Promise<AssembleResu
 async function agentGenerate(
   projectId: number,
   message: string,
-  attachments: { cdnUrl: string; mimeType: string; filename: string }[],
+  attachments: { cdnUrl: string; mimeType: string; filename: string; size: number }[],
   presetId?: string,
 ): Promise<string> {
   const args = ['agent-generate', String(projectId), message];
   // ⚠️ 프리셋(voice/tone)은 agent-generate 의 presetId 로 적용됨 (create-project 만으론 안 됨).
   if (presetId) args.push('--preset-id', presetId);
   for (const a of attachments) {
-    args.push('--cdn-url', a.cdnUrl, '--mime', a.mimeType, '--filename', a.filename);
+    // ⚠️ --size 필수: size 0 이면 에이전트가 빈 파일로 보고 이미지를 실제 배치에 안 씀.
+    args.push('--cdn-url', a.cdnUrl, '--mime', a.mimeType, '--filename', a.filename, '--size', String(a.size));
   }
   const out = await runSkill(VP_CLIENT, args);
   const url = out.split('\n').map((l) => l.trim()).filter(Boolean).pop();
@@ -232,17 +273,23 @@ export interface AgentResult {
 
 export async function generateWithAgent(cfg: AgentConfig): Promise<AgentResult> {
   if (!process.env.KVIDAI_API_KEY) throw new Error('KVIDAI_API_KEY 미설정');
-  assertSkillsInstalled();
+  // agent-generate 는 아직 스킬 경유(CLI video generate 가 preset+다중첨부 미지원).
+  assertAgentSkillInstalled();
+
+  // 참고(2026-07-31): 예전 "message 길이 가드"는 제거했다. 첨부 이미지 미배치의 실제 원인은
+  // 긴 message 자체가 아니라 서버 estimateSceneCount 가 "3분할" 같은 합성어의 "분" 을 "3분(minutes)"
+  // 으로 오인해 long-video 경로로 오라우팅한 것이었고, 플랫폼에서 수정됨. (30초 요청은 short-edit 경로.)
+  // 남은 미지원: 진짜 long-video("3분"+) + 첨부 이미지 배치는 아직 별도 기능(추후).
 
   // 1. 첨부 자산 업로드
-  const attachments: { cdnUrl: string; mimeType: string; filename: string }[] = [];
+  const attachments: { cdnUrl: string; mimeType: string; filename: string; size: number }[] = [];
   const attached: { file: string; cdnUrl: string }[] = [];
   for (const file of cfg.attachFiles ?? []) {
     const path = resolve(cfg.assetBaseDir, file);
     if (!existsSync(path)) throw new Error(`첨부 자산 없음: ${path}`);
     process.stderr.write(`[video] uploading ${file}...\n`);
-    const { cdnUrl, mimeType } = await uploadMedia(path);
-    attachments.push({ cdnUrl, mimeType, filename: basename(file) });
+    const { cdnUrl, mimeType, size } = await uploadMedia(path);
+    attachments.push({ cdnUrl, mimeType, filename: basename(file), size });
     attached.push({ file, cdnUrl });
   }
 

@@ -1,0 +1,18 @@
+{
+  "wordmark": "샘플 ON 프로젝트",
+  "brandBar": "샘플 주최 · 샘플 브랜드",
+  "scenes": [
+    { "kind": "cover", "eyebrow": "한 줄 소개 문구를 여기에", "eyebrowTail": "지금 시작", "titleLines": ["샘플", "카드뉴스", "예시"], "subtitle": "이 파일을 복제해 자기 콘텐츠로 교체하세요", "durationSec": 5 },
+    { "kind": "about", "question": "이 프로그램이란?", "lines": ["핵심 설명 첫째 줄", "둘째 줄에 부연 설명", "셋째 줄까지 활용 가능"], "emphasis": ["핵심 설명", "부연 설명"], "durationSec": 4.6 },
+    { "kind": "recruit", "label": "모집대상", "who": "참여 대상 설명", "count": 20, "unit": "명", "ageText": "지원 자격 문구", "note": "※ 비고/단서 문구", "durationSec": 4.6 },
+    { "kind": "schedule", "label": "안내", "steps": [
+      { "tag": "모집기간", "when": "0. 00. ~ 0. 00.", "hot": true },
+      { "tag": "선발기준", "when": "선발 기준 문구" },
+      { "tag": "발표", "when": "0. 00.", "detail": "발표 방식" }
+    ], "durationSec": 5.2 },
+    { "kind": "apply", "label": "신청방법", "lead": ["지금 신청하세요"], "deadline": "접수 마감 0. 00.", "siteName": "신청 사이트/경로", "tel": "000-0000-0000", "qrNote": "▼ 자세히", "durationSec": 5 }
+  ],
+  "width": 1080,
+  "height": 1920,
+  "fps": 30
+}

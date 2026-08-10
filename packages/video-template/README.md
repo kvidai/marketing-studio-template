@@ -1,35 +1,18 @@
 # video-template
 
-Video generation via kvidai — no local rendering pipeline. Planning docs
-live here; the actual generate+deliver call goes through
-`@marketing-studio/send-video-kvidai`.
+kvid.ai 비디오 채널 진입점. `campaigns/<slug>/video.json` 하나를 읽어 kvid.ai 프로젝트 composition 으로 조립한다. 실제 API 호출은 `@marketing-studio/send-video-kvidai`(배포 스킬 위임).
 
-## Workflow
+## Modes
+- `direct` — scenes[] 를 직접 조립(에이전트 미사용) — ✅
+- `agent` — 압축 브리프 + 첨부를 kvid.ai 에이전트에 위임 — ✅
+- `cardnews` — Remotion 카드뉴스 무음 마스터를 씬별 클립으로 잘라 composition 에 얹음 — ✅
 
-1. Write the video plan in `prompts/{video-name}/`:
-   - `brief.md` — purpose, target, key message, distribution channels
-   - `script.md` — full script, scene by scene
-   - `visuals.md` — per-scene visual direction / image prompts
-2. Run generation:
-   ```bash
-   pnpm --filter video-template generate -- --project=prompts/{video-name} --output=outputs/{video-name}.mp4
-   ```
-   This creates a kvidai project, streams the AI agent (reading `brief.md` +
-   `script.md` + `visuals.md` as the instruction) to build the video, and
-   prints the review/edit URL (`https://kvid.ai/en/editor/{projectId}`).
-3. Review and finish the edit in the kvidai editor at that URL.
+## Status
+카드뉴스 모션 → kvid.ai 에디터 경로 포함, 3모드 동작. 최종 export 는 에디터에서 수동.
 
-## This folder's role
-
-- `prompts/` — scene structure, script, and visual-direction planning docs
-- `src/index.ts` — thin CLI wrapper around `@marketing-studio/send-video-kvidai`
-
-## prompts/ layout
-
+## Commands
+```bash
+pnpm --filter video-template generate -- --campaign=<slug> [--dry-run|--build-only|--new]
 ```
-prompts/
-├── scene-structure.md    # scene planning guide
-├── script-writer.md      # AI script-generation prompt
-├── visual-direction.md   # visual-direction prompt
-└── {video-name}/         # per-video planning docs (brief/script/visuals)
-```
+
+세부 사용법·모드별 video.json 스키마는 `CLAUDE.md` 참고.
