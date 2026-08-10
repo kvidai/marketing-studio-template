@@ -181,7 +181,7 @@ apm install --target codex
 
 # Recreate symlinks (first install or if removed)
 cd .claude/skills
-for skill in kvidai-media kvidai-preset kvidai-video-project kvidai-video-use; do
+for skill in kvidai-ai kvidai-media kvidai-preset kvidai-video-project kvidai-video-use; do
   ln -sf ../../.agents/skills/$skill $skill
 done
 ```
@@ -194,8 +194,9 @@ done
 | `kvidai-video-project` | Create video projects + AI auto-edit |
 | `kvidai-media` | Media upload / management |
 | `kvidai-preset` | Preset CRUD |
+| `kvidai-ai` | Generation endpoints not in the CLI: voice (TTS), STT, ai-edit |
 
-Source: `epicmobile18/kvidai-skills` (public) — installs from `main` branch.
+Source: `kvidai/kvidai-skills` (public) — 전체 레지스트리 auto-pull. 카피를 이 repo 에 커밋하지 않는다(구버전 드리프트 방지).
 
 ## Plan Files
 

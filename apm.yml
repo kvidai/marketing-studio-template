@@ -5,7 +5,7 @@ description: AI-assisted marketing content creation and channel publishing templ
 author: kvidai
 dependencies:
   apm:
-  - kvidai/kvidai-skills                 # kvidai video project, media, preset, video-use skills
+  - kvidai/kvidai-skills                 # 전체 kvid.ai 플랫폼 스킬 레지스트리 (ai/media/preset/video-project/video-use) — 카피 커밋 대신 여기서 auto-pull
   # - mattpocock/skills/skills/productivity/grill-me
   mcp: []
 includes: auto
