@@ -40,7 +40,7 @@ cd marketing-studio
 ```
 
 ### 2단계 — 설치 (둘 중 택1, 결과 동일)
-- **사람이 수동으로**: `docs/SETUP.md` 를 따라 Node 22 · pnpm 10 · ffmpeg · `pnpm install` · kvid CLI 설치
+- **사람이 수동으로**: `docs/SETUP.md` 를 따라 Node 22 · pnpm 10 · ffmpeg · poppler(PDF 자료용) · `pnpm install` · kvid CLI 설치
   ```bash
   curl https://cli.kvid.ai/install -fsS | bash   # kvid CLI (영상 채널 필수)
   pnpm install

@@ -12,7 +12,8 @@
 | **pnpm** | 10.x | `pnpm --version` |
 | **Python** | 3.11+ | `python3 --version` |
 | **ffmpeg** | 최신 | `ffmpeg -version` |
-| **kvid CLI** | 0.8.0+ | `kvid --version` |
+| **poppler** (pdftoppm) | 최신 | `pdftoppm -v` |
+| **kvid CLI** | 0.9.0+ | `kvid --version` |
 
 ### Node.js 설치 (nvm 권장)
 ```bash
@@ -29,6 +30,15 @@ npm install -g pnpm@10
 ### ffmpeg 설치 (카드뉴스 씬 클립 분할·음성 합성)
 ```bash
 # macOS: brew install ffmpeg   /   Ubuntu: sudo apt-get install -y ffmpeg
+```
+
+### poppler 설치 (PDF 참고자료를 이미지로 변환)
+참고자료(포스터·브리프)가 **PDF** 로 오면 이미지로 변환해서 분석·자산 크롭(카드뉴스 family)에 쓴다.
+(PDF 내용 "읽기"만 필요하면 Claude 의 Read 도구가 PDF 를 네이티브로 읽으므로 이 도구는 불필요.)
+```bash
+# macOS: brew install poppler   /   Ubuntu: sudo apt-get install -y poppler-utils
+# 사용 예: PDF 1페이지 → PNG
+pdftoppm -png -r 200 -f 1 -l 1 poster.pdf references/<set>/poster
 ```
 
 ### kvid CLI 설치 (영상 채널 — kvid.ai 업로드·프로젝트·TTS)
