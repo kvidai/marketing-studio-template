@@ -30,11 +30,12 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 
 ## 단계
 
-### 0. 모드 선택 (유저에게 물어봄) ⚠️
-영상 만들기 시작 시 **AskUserQuestion 으로 유저에게 조립 방식을 물어본다**:
-- **agent (풍성·자동)**: 에이전트가 대본·씬구성·나레이션·키워드오버레이 등 창의 요소까지. 내 손 덜 감, 결과 다이내믹. (예: project 484)
-- **direct (정확·통제)**: 내가 씬·자막·배치를 정확히 지정. 예측가능·단순. (예: project 477)
-선택에 따라 video.json 형식이 갈림(agent = message+attach / direct = scenes).
+### 0. 모드 — 기본 = **agent** (묻지 말고 agent 로 진행)
+- **agent (기본·권장)**: 에이전트가 대본·씬구성·나레이션·키워드오버레이 등 창의 요소까지 자동. 결과 다이내믹. → **특별한 요청이 없으면 무조건 이걸로.** (video.json = message + attach)
+- **direct (확장·특수)**: 유저가 "씬/자막/배치를 정확히 이렇게" 처럼 **정밀 통제를 명시적으로 요구할 때만**. (video.json = scenes) — 상세: 아래 "direct 모드".
+- **cardnews (확장)**: 포스터형 모션 카드뉴스를 원할 때. `packages/video-template/CLAUDE.md` cardnews 모드.
+
+→ 기본은 agent. direct/cardnews 는 유저가 그 방식을 콕 집어 요구할 때만 쓴다(굳이 매번 물어보지 않는다).
 
 ### 1. 스캐폴드
 ```bash
