@@ -471,7 +471,7 @@ Other project directories may have in-progress work (unstaged changes, WIP files
 
 ```bash
 # Sync only — stop here, report what changed
-./templates/sync-rules.sh --root /path/to/other-project
+scripts/sync-to-template.sh
 git -C /path/to/other-project diff --stat .claude/rules/ docs/
 # → "These files changed. Commit?" — wait for user confirmation
 ```
