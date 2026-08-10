@@ -17,33 +17,40 @@
 
 ### Node.js 설치 (nvm 권장)
 ```bash
+# macOS/Linux (nvm):
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-nvm install 22
-nvm use 22
+nvm install 22 && nvm use 22
+# Windows: winget install OpenJS.NodeJS  (또는 nvm-windows: github.com/coreybutler/nvm-windows)
 ```
 
 ### pnpm 설치
 ```bash
-npm install -g pnpm@10
+npm install -g pnpm@10   # macOS/Linux/Windows 공통
 ```
 
 ### ffmpeg 설치 (카드뉴스 씬 클립 분할·음성 합성)
 ```bash
-# macOS: brew install ffmpeg   /   Ubuntu: sudo apt-get install -y ffmpeg
+# macOS:            brew install ffmpeg
+# Ubuntu/Debian:    sudo apt-get install -y ffmpeg
+# Windows:          winget install Gyan.FFmpeg   (또는 scoop install ffmpeg / choco install ffmpeg)
 ```
 
 ### poppler 설치 (PDF 참고자료를 이미지로 변환)
 참고자료(포스터·브리프)가 **PDF** 로 오면 이미지로 변환해서 분석·자산 크롭(카드뉴스 family)에 쓴다.
 (PDF 내용 "읽기"만 필요하면 Claude 의 Read 도구가 PDF 를 네이티브로 읽으므로 이 도구는 불필요.)
 ```bash
-# macOS: brew install poppler   /   Ubuntu: sudo apt-get install -y poppler-utils
+# macOS:            brew install poppler
+# Ubuntu/Debian:    sudo apt-get install -y poppler-utils
+# Windows:          scoop install poppler   (또는 choco install poppler
+#                   / 수동: github.com/oschwartz10612/poppler-windows Release 다운로드 후 bin 을 PATH 에)
 # 사용 예: PDF 1페이지 → PNG
 pdftoppm -png -r 200 -f 1 -l 1 poster.pdf references/<set>/poster
 ```
 
 ### kvid CLI 설치 (영상 채널 — kvid.ai 업로드·프로젝트·TTS)
 ```bash
-curl https://cli.kvid.ai/install -fsS | bash    # kvidai + kvid alias
+# macOS/Linux:        curl https://cli.kvid.ai/install -fsS | bash
+# Windows(PowerShell): irm https://cli.kvid.ai/install.ps1 | iex
 kvid setup                                        # 또는 KVIDAI_API_KEY 환경변수
 ```
 영상 파이프라인(video-template)은 `kvid` CLI 로 업로드·프로젝트 생성·composition 교체·TTS·agent 생성을 모두 수행한다. `kvid --version` 이 나와야 한다(v0.9.0+).
