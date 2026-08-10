@@ -57,7 +57,11 @@ KVIDAI_API_KEY=<app.kvid.ai/settings 발급 키>
 KVIDAI_USER_EMAIL=<크레딧 계정 이메일>
 KVIDAI_BASE_URL=https://api.kvid.ai
 ```
-> direct·cardnews 모드는 `kvid` CLI 만으로 동작. **agent 모드**까지 쓰려면 `apm install --target codex` 추가(스킬 설치).
+> 영상 3가지 모드가 전부 **`kvid` CLI 만으로 동작**한다 — 별도 설치 불필요:
+> - **agent (기본)**: 압축 브리프 + 첨부만 주면 kvid.ai 에이전트가 대본·씬·미디어·조립까지 자동
+> - **direct (확장)**: 씬을 정확히 지정해 composition 직접 조립
+> - **cardnews (확장)**: Remotion 모션 카드뉴스를 씬별 클립으로 잘라 composition
+> (`kvidai-video-use` 같은 별도 대화형 편집 스킬을 쓸 때만 `apm install --target codex`)
 
 ### 4단계 — (선택) 설치 검증: 예시 파이프라인 먼저 돌려보기
 ```bash

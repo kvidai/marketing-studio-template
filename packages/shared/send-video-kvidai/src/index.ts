@@ -1,12 +1,12 @@
-// kvid.ai 비디오 = 배포된 kvidai-skills(APIM) 스크립트에 위임한다. 커스텀 API 클라 직접 작성 금지.
+// kvid.ai 비디오 = 배포된 `kvid` CLI 에 위임한다. 커스텀 API 클라 직접 작성 금지.
 //
-// ⚠️ v0.3.0 방향: kvid.ai AI 에이전트(agent-generate)를 쓰지 않는다.
-// 에이전트의 역할(미디어 생성 + composition 조립)을 Claude Code 가 직접 한다.
-// 미디어는 상위(/new-video)에서 kvidai CLI 로 생성해 파일로 넘기고, 이 모듈은:
-//   create-project → media upload-file → composition 직접 빌드 → replace-composition → get-project
+// 두 경로 모두 kvid CLI 로:
+//   direct  : upload → project create → composition 직접 빌드 → project replace-composition → project get
+//   agent   : upload → project create → video generate(--preset-id --attachments) → project get
+// (예전엔 agent 만 kvidai-video-project 스킬을 썼으나, CLI video generate 확장으로 흡수됨.)
 
 import { spawn } from 'node:child_process';
-import { resolve, dirname, basename } from 'node:path';
+import { resolve, basename } from 'node:path';
 import { existsSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { imageSize } from 'image-size';
@@ -28,31 +28,9 @@ export function buildPreview(plan: ScenePlan) {
   return buildComposition(plan, idx);
 }
 
-// ── 배포 스킬 스크립트 위치 (monorepo root 기준) ──────────────────────────────
-
-function findMonorepoRoot(startDir: string): string {
-  let dir = startDir;
-  while (dir !== dirname(dir)) {
-    if (existsSync(resolve(dir, 'pnpm-workspace.yaml'))) return dir;
-    dir = dirname(dir);
-  }
-  throw new Error('monorepo root (pnpm-workspace.yaml) not found');
-}
-
-const ROOT = findMonorepoRoot(process.cwd());
-// 직접 조립(upload/create/replace-composition/get)·voice 는 배포된 kvid CLI 로.
-// KVIDAI_CLI_BIN 로 바이너리 경로 오버라이드 가능(릴리스 전 로컬 dist 검증용). 기본은 PATH 의 `kvid`.
+// 배포된 kvid CLI 로 위임. KVIDAI_CLI_BIN 로 바이너리 경로 오버라이드 가능(릴리스 전 로컬 dist 검증용).
+// 기본은 PATH 의 `kvid`.
 const KVID_BIN = process.env.KVIDAI_CLI_BIN ?? 'kvid';
-// agent-generate 는 아직 CLI video generate 가 preset+다중첨부를 못 다뤄 스킬을 유지한다.
-const VP_CLIENT = resolve(ROOT, '.claude/skills/kvidai-video-project/scripts/kvidai-client.mjs');
-
-function assertAgentSkillInstalled(): void {
-  if (!existsSync(VP_CLIENT)) {
-    throw new Error(
-      `kvidai-video-project 스킬 없음: ${VP_CLIENT}\nAPM 설치 필요 — CLAUDE.md "Install / Update Skills" 참고.`,
-    );
-  }
-}
 
 // ── 프로세스 호출 헬퍼 (stdout=결과, stderr=진행상황) ─────────────────────────
 
@@ -121,19 +99,6 @@ async function getProject(projectId: number): Promise<unknown> {
   return runKvid(['project', 'get', String(projectId)]);
 }
 
-// ── 스킬 위임 (agent-generate 전용) ────────────────────────────────────────────
-function runSkill(script: string, args: string[]): Promise<string> {
-  return new Promise((res, rej) => {
-    const child = spawn('node', [script, ...args], { env: process.env });
-    let out = '';
-    child.stdout.on('data', (d) => { out += d.toString(); });
-    child.stderr.on('data', (d) => process.stderr.write(d));
-    child.on('error', rej);
-    child.on('close', (code) =>
-      code === 0 ? res(out.trim()) : rej(new Error(`${basename(script)} ${args[0]} exited with code ${code}`)),
-    );
-  });
-}
 
 // ── 오케스트레이션 (직접 조립) ─────────────────────────────────────────────────
 
@@ -236,23 +201,20 @@ export async function assembleProject(cfg: AssembleConfig): Promise<AssembleResu
 // Claude(전처리) 가 압축 브리프+자산을 준비 → 에이전트가 대본/씬/생성/조립.
 // message = 제품지식 + 자산 매니페스트(파일명+설명+추천용도). attach = 첨부할 로컬 파일.
 
-/** video-project agent-generate — 압축메시지 + 첨부 cdnUrl 로 에이전트 실행 → editor URL */
+/** kvid video generate — 압축메시지 + 첨부(cdnUrl) 로 에이전트 실행 → editor URL */
 async function agentGenerate(
   projectId: number,
   message: string,
   attachments: { cdnUrl: string; mimeType: string; filename: string; size: number }[],
   presetId?: string,
 ): Promise<string> {
-  const args = ['agent-generate', String(projectId), message];
-  // ⚠️ 프리셋(voice/tone)은 agent-generate 의 presetId 로 적용됨 (create-project 만으론 안 됨).
+  const args = ['video', 'generate', String(projectId), message];
+  // ⚠️ 프리셋(voice/tone)은 generate 의 --preset-id 로 적용됨 (create-project 만으론 안 됨).
   if (presetId) args.push('--preset-id', presetId);
-  for (const a of attachments) {
-    // ⚠️ --size 필수: size 0 이면 에이전트가 빈 파일로 보고 이미지를 실제 배치에 안 씀.
-    args.push('--cdn-url', a.cdnUrl, '--mime', a.mimeType, '--filename', a.filename, '--size', String(a.size));
-  }
-  const out = await runSkill(VP_CLIENT, args);
-  const url = out.split('\n').map((l) => l.trim()).filter(Boolean).pop();
-  return url ?? `https://kvid.ai/en/editor/${projectId}`;
+  // ⚠️ --attachments 의 size 는 실제 크기여야 함. size 0 이면 에이전트가 빈 파일로 보고 이미지를 안 씀.
+  if (attachments.length) args.push('--attachments', JSON.stringify(attachments));
+  const res = await runKvid<{ url?: string }>(args);
+  return res.url ?? `https://kvid.ai/en/editor/${projectId}`;
 }
 
 export interface AgentConfig {
@@ -273,8 +235,7 @@ export interface AgentResult {
 
 export async function generateWithAgent(cfg: AgentConfig): Promise<AgentResult> {
   if (!process.env.KVIDAI_API_KEY) throw new Error('KVIDAI_API_KEY 미설정');
-  // agent-generate 는 아직 스킬 경유(CLI video generate 가 preset+다중첨부 미지원).
-  assertAgentSkillInstalled();
+  // agent 모드도 kvid CLI(video generate --preset-id --attachments)로 동작 — 스킬 불필요.
 
   // 참고(2026-07-31): 예전 "message 길이 가드"는 제거했다. 첨부 이미지 미배치의 실제 원인은
   // 긴 message 자체가 아니라 서버 estimateSceneCount 가 "3분할" 같은 합성어의 "분" 을 "3분(minutes)"

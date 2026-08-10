@@ -36,13 +36,10 @@ npm install -g pnpm@10
 curl https://cli.kvid.ai/install -fsS | bash    # kvidai + kvid alias
 kvid setup                                        # 또는 KVIDAI_API_KEY 환경변수
 ```
-영상 파이프라인(video-template)은 `kvid` CLI 로 업로드·프로젝트 생성·composition 교체·TTS 를 수행한다. `kvid --version` 이 나와야 한다.
+영상 파이프라인(video-template)은 `kvid` CLI 로 업로드·프로젝트 생성·composition 교체·TTS·agent 생성을 모두 수행한다. `kvid --version` 이 나와야 한다(v0.9.0+).
 
-> **direct/cardnews 모드는 `kvid` CLI 만으로 동작**한다. **agent 모드**(new-video 의 자동 대본·씬 생성)만 추가로 APM 스킬(`kvidai-video-project`)이 필요하다:
-> ```bash
-> # (agent 모드 쓸 때만) APM 설치 후
-> apm install --target codex
-> ```
+> **영상 3모드(agent[기본]·direct·cardnews) 전부 `kvid` CLI 만으로 동작** — APM 스킬 불필요.
+> `kvidai-video-use`(대화형 영상 편집) 등 별도 스킬을 쓸 때만 `apm install --target codex`.
 
 ### (참고) 첫 카드뉴스/인포그래픽 렌더
 `infographic-remotion` 첫 렌더 시 **Remotion 이 chromium headless shell 을 자동 다운로드**한다(수백 MB, 최초 1회만 느림).
