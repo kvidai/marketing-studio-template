@@ -69,6 +69,7 @@ marketing-studio/
 | Workflow checklist | `.claude/rules/workflow-rules.md` |
 | Coding guidelines | `.claude/rules/coding-guidelines.md` |
 | Dependency management | `.claude/rules/dependency-management.md` |
+| Video/content generation (독립 생성·재사용 한도·agent 위임 경계) | `.claude/rules/video-generation-rules.md` |
 
 ## Running Packages
 
