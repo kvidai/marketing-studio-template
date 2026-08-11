@@ -44,7 +44,7 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 목표 흐름: **Claude 가 파일 분석 → 업로드 → `attachedFiles`(URL+메타) + message 에 분석기반 설명 → 에이전트가 `use_uploaded_asset` 으로 배치.** (파일 바이트 대신 URL+설명.)
 - **≤10 이미지**: 위 그대로 정상 동작 (검증됨).
 - **>10 이미지 (긴 영상)**: ⛔ **현재 서버가 `attachedFiles` 를 10개로 하드 제한**(`/agent/generate` Zod `max:10`, 실측 400 `too_big`). `composition.assets` 시딩은 **에이전트가 실제 배치 안 함**(실측 0/12) → **의존 금지.** 그러니 **핵심 10개로 큐레이션**하거나 유저 지시를 따른다. **direct 로 자동 전환하지 않는다.**
-- 무제한은 **백엔드에서 `attachedFiles` 캡만 상향하면** 코드 변경 없이 열림(use_uploaded_asset 은 이미 동작). 추적: `kvidai-cli/.claude/plans/20260811_todo_agent-composition-assets.md`, `.claude/rules/upstream-cli-contract.md`.
+- 무제한은 **캡 상향으로는 못 엶** — 캡 10 은 에이전트 **입력 토큰 예산 보호용**이라 숫자만 올리면 토큰 초과. 진짜 해법은 **백엔드가 `composition.assets` 를 토큰-free 로 배치**(use_uploaded_asset 이 asset id 를 해석, 파일은 프롬프트에 안 실림). 추적: `kvidai-cli/.claude/plans/20260811_todo_agent-composition-assets.md`, `.claude/rules/upstream-cli-contract.md`.
 
 ### 1. 스캐폴드
 ```bash
