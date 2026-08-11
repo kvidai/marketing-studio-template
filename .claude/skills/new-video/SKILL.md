@@ -41,8 +41,10 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 즉 유저가 direct/cardnews 를 **입으로 지정하지 않으면 예외 없이 agent** 로 조용히 진행한다.
 
 **⚙️ 이미지가 많아도 agent 유지 — direct 로 폴백하지 않는다.**
-목표 흐름(다수 이미지): **Claude 가 파일 분석 → 업로드 → message 에 `URL + 분석기반 설명` 매니페스트로 전달 → 에이전트가 그 URL·설명으로 composition 작성.** (파일 바이트 대신 URL+설명만; `attachedFiles` ~10캡을 안 거침. 필요 시 `composition.assets` 시딩 병행.)
-⚠️ **업스트림 의존(진행 중)**: 에이전트가 **매니페스트의 URL 을 실제 씬에 배치**하도록 **API/에이전트 작업이 필요**하다 — 현재 미완(실측 2026-08 project 556: 미소비 시 SSE 행). 지원 전까지 다수 이미지는 핵심 컷으로 **큐레이션(≤~10 attachedFiles)** 하거나 유저 지시를 따른다. **direct 로 자동 전환하지 않는다.** 추적: `kvidai-cli/.claude/plans/20260811_todo_agent-composition-assets.md`, `.claude/rules/upstream-cli-contract.md`.
+목표 흐름: **Claude 가 파일 분석 → 업로드 → `attachedFiles`(URL+메타) + message 에 분석기반 설명 → 에이전트가 `use_uploaded_asset` 으로 배치.** (파일 바이트 대신 URL+설명.)
+- **≤10 이미지**: 위 그대로 정상 동작 (검증됨).
+- **>10 이미지 (긴 영상)**: ⛔ **현재 서버가 `attachedFiles` 를 10개로 하드 제한**(`/agent/generate` Zod `max:10`, 실측 400 `too_big`). `composition.assets` 시딩은 **에이전트가 실제 배치 안 함**(실측 0/12) → **의존 금지.** 그러니 **핵심 10개로 큐레이션**하거나 유저 지시를 따른다. **direct 로 자동 전환하지 않는다.**
+- 무제한은 **백엔드에서 `attachedFiles` 캡만 상향하면** 코드 변경 없이 열림(use_uploaded_asset 은 이미 동작). 추적: `kvidai-cli/.claude/plans/20260811_todo_agent-composition-assets.md`, `.claude/rules/upstream-cli-contract.md`.
 
 ### 1. 스캐폴드
 ```bash
