@@ -40,11 +40,14 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 
 즉 유저가 direct/cardnews 를 **입으로 지정하지 않으면 예외 없이 agent** 로 조용히 진행한다.
 
-**⚙️ 이미지가 많아도 agent 유지 — direct 로 폴백하지 않는다.**
-목표 흐름: **Claude 가 파일 분석 → 업로드 → `attachedFiles`(URL+메타) + message 에 분석기반 설명 → 에이전트가 `use_uploaded_asset` 으로 배치.** (파일 바이트 대신 URL+설명.)
-- **≤10 이미지**: 위 그대로 정상 동작 (검증됨).
-- **>10 이미지 (긴 영상)**: ⛔ **현재 서버가 `attachedFiles` 를 10개로 하드 제한**(`/agent/generate` Zod `max:10`, 실측 400 `too_big`). `composition.assets` 시딩은 **에이전트가 실제 배치 안 함**(실측 0/12) → **의존 금지.** 그러니 **핵심 10개로 큐레이션**하거나 유저 지시를 따른다. **direct 로 자동 전환하지 않는다.**
-- 무제한은 **캡 상향으로는 못 엶** — 캡 10 은 에이전트 **입력 토큰 예산 보호용**이라 숫자만 올리면 토큰 초과. 진짜 해법은 **백엔드가 `composition.assets` 를 토큰-free 로 배치**(use_uploaded_asset 이 asset id 를 해석, 파일은 프롬프트에 안 실림). 추적: `kvidai-cli/.claude/plans/20260811_todo_agent-composition-assets.md`, `.claude/rules/upstream-cli-contract.md`.
+**⚙️ 이미지가 많아도(>10) agent 로 무제한 — 검증됨(2026-08, project 564: 12/12 배치).**
+토큰-free 자산 라이브러리 경로로 attachedFiles 10캡을 넘어선다:
+1. Claude 가 파일 분석 → 업로드(cdnUrl) 확보
+2. 각 자산을 **`kvid assets add-composition <pid> <email> '{"id","type":"image","filename","remoteUrl":cdnUrl}'`** 로 프로젝트에 등록(add_asset, **프롬프트 토큰 0**)
+3. **`attachedFiles` 없이** generate. **message 엔 분석기반 설명(용도)** 만 — 서버가 자산 매니페스트(id+파일명)를 자동 주입하고 에이전트가 `use_uploaded_asset` 으로 배치.
+- 실측: 12장 등록 → **Media 트랙 12 아이템 배치**, attachedFiles=0, 토큰 초과 없음.
+- ≤10 도 이 경로로 통일 가능(attachedFiles 는 레거시 경로). **direct 폴백 불필요.**
+- ⚠️ add_asset 의 `remoteUrl` 은 **유효 CDN**(kvidai-media 업로드 cdnUrl)이어야 렌더됨. generate 의 projectId = 자산 등록한 projectId. (미배치 자산은 orphan pruning 으로 제거 — 정상.)
 
 ### 1. 스캐폴드
 ```bash
