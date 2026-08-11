@@ -31,12 +31,14 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 
 ## 단계
 
-### 0. 모드 — 기본 = **agent** (묻지 말고 agent 로 진행)
-- **agent (기본·권장)**: 에이전트가 대본·씬구성·나레이션·키워드오버레이 등 창의 요소까지 자동. 결과 다이내믹. → **특별한 요청이 없으면 무조건 이걸로.** (video.json = message + attach)
-- **direct (확장·특수)**: 유저가 "씬/자막/배치를 정확히 이렇게" 처럼 **정밀 통제를 명시적으로 요구할 때만**. (video.json = scenes) — 상세: 아래 "direct 모드".
-- **cardnews (확장)**: 포스터형 모션 카드뉴스를 원할 때. `packages/video-template/CLAUDE.md` cardnews 모드.
+### 0. 모드 — **항상 agent 로 자동 진행. 모드를 묻거나 선택지를 제시하지 않는다.**
+기본값이자 사실상 유일 경로는 **agent**. 유저에게 "agent/direct 중 뭐로 할까요?" 같은 **질문·선택지 제시 금지** — 그냥 agent 로 바로 `video.json`(mode:"agent") 작성 후 실행한다.
 
-→ 기본은 agent. direct/cardnews 는 유저가 그 방식을 콕 집어 요구할 때만 쓴다(굳이 매번 물어보지 않는다).
+**예외는 유저가 명시적으로 요구할 때뿐:**
+- **direct** — 유저가 **"direct 모드로"** 라고 말하거나 "씬/자막/배치를 정확히 이렇게" 식으로 **정밀 통제를 콕 집어 요구**할 때만. (video.json = scenes) — 상세: 아래 "direct 모드".
+- **cardnews** — 유저가 **"이 포스터로 카드뉴스 영상"** 처럼 포스터형 모션 카드뉴스를 명시할 때만. (`packages/video-template/CLAUDE.md`)
+
+즉 유저가 direct/cardnews 를 **입으로 지정하지 않으면 예외 없이 agent** 로 조용히 진행한다.
 
 ### 1. 스캐폴드
 ```bash
