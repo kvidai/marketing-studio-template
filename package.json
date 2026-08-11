@@ -4,6 +4,7 @@
   "scripts": {
     "setup": "node scripts/setup.mjs",
     "doctor": "node scripts/doctor.mjs",
+    "upgrade": "node scripts/upgrade.mjs",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",

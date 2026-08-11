@@ -55,7 +55,7 @@ kvid setup                                        # 또는 KVIDAI_API_KEY 환경
 ```
 영상 파이프라인(video-template)은 `kvid` CLI 로 업로드·프로젝트 생성·composition 교체·TTS·agent 생성을 모두 수행한다. `kvid --version` 이 나와야 한다(v0.9.0+).
 
-> 🔄 **최신 유지 (중요)**: kvid.ai API 가 바뀌면 CLI 도 갱신된다. **`pnpm doctor`** 한 번이면 `kvid update` + 스킬 최신화까지 자동 — 과거 버전으로 인한 오류를 예방한다. (영상 실행 시 최소 버전 미만이면 자동으로 "`kvid update` 하세요" 안내와 함께 중단됨.) 계약: `.claude/rules/upstream-cli-contract.md`.
+> 🔄 **최신 유지 (중요)**: **`pnpm doctor`** 한 번이면 프레임워크(레시피/규칙/코드) + `kvid update`(CLI) + 스킬까지 **전부 최신화** — 내 콘텐츠(campaigns/references/presets)는 그대로. 프레임워크만 받고 싶으면 `pnpm run upgrade`. (영상 실행 시 kvid 최소 버전 미만이면 자동으로 "`kvid update` 하세요" 안내와 함께 중단.) 계약: `.claude/rules/upstream-cli-contract.md`. 자세히: README "업데이트" 절.
 
 > **영상 3모드(agent[기본]·direct·cardnews) 전부 `kvid` CLI 만으로 동작** — APM 스킬 불필요.
 > `kvidai-video-use`(대화형 영상 편집) 등 별도 스킬을 쓸 때만 `apm install --target codex`.

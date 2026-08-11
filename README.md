@@ -33,11 +33,15 @@ Each package owns one complete marketing artifact. AI agents handle content qual
 - **kvid.ai 계정 + API 키** — https://app.kvid.ai/settings 에서 발급, 크레딧 확인
 - macOS 또는 Linux + 터미널
 
-### 1단계 — 클론
-```bash
-git clone https://github.com/kvidai/marketing-studio-template marketing-studio
-cd marketing-studio
-```
+### 1단계 — 내 저장소로 받기 (둘 중 택1)
+- **권장 — "Use this template"**: GitHub 저장소 상단 초록 **"Use this template"** 버튼 → 내 계정에 **독립 repo** 생성. 우리 repo 는 못 건드리고(권한상 안전), 내 작업은 내 repo 에 push. 이후 프레임워크 업데이트는 아래 [업데이트](#업데이트--최신-유지) 참고.
+  ```bash
+  git clone https://github.com/<나>/<내-repo> marketing-studio && cd marketing-studio
+  ```
+- **간단 — 그냥 clone**: 우리 repo 를 직접 clone (개인 실험용). push 는 권한상 안 됨.
+  ```bash
+  git clone https://github.com/kvidai/marketing-studio-template marketing-studio && cd marketing-studio
+  ```
 
 ### 2단계 — 설치 (둘 중 택1, 결과 동일)
 - **사람이 수동으로**: `docs/SETUP.md` 를 따라 Node 22 · pnpm 10 · ffmpeg · poppler(PDF 자료용) · `pnpm install` · kvid CLI 설치
@@ -87,6 +91,23 @@ pnpm --filter video-template generate -- --campaign=.example
 정적 카드뉴스(인스타)·이메일·블로그·레딧은 각각 `/new-cardnews` · `/new-email-blast` · `/new-blog-post` · `/new-reddit-post` (각 채널 키 필요).
 
 상세 문서: `packages/video-template/CLAUDE.md`(cardnews 모드·나레이션), `.claude/skills/new-video/SKILL.md`, `docs/channels/kvid-composition-guide.md`.
+
+---
+
+## 업데이트 — 최신 유지
+
+우리가 레시피/CLI/스킬을 개선하면, **내 작업(campaigns·references·presets)은 그대로 두고** 프레임워크만 최신으로 받을 수 있다.
+
+```bash
+pnpm doctor        # 원클릭 전체 최신화: 프레임워크 + kvid CLI + 플랫폼 스킬
+# 또는 부분만:
+pnpm run upgrade   # 프레임워크(레시피/규칙/코드)만 upstream 최신으로  (campaigns/references/presets 는 안 건드림)
+kvid update        # kvid CLI 만
+```
+
+- **왜 안전한가**: 프레임워크(`.claude/` `packages/` `scripts/` 등)와 내 콘텐츠(`campaigns/` `references/` `presets/`)가 **다른 폴더**라, `pnpm run upgrade` 는 프레임워크 폴더만 upstream 최신으로 덮어쓴다. 내 콘텐츠·`README.md`·`.env.production` 은 건드리지 않는다.
+- **영상 실행 시** kvid CLI 가 최소 버전 미만이면 자동으로 "`kvid update` 하세요" 안내와 함께 멈춘다(과거버전 조용한 오류 방지). 계약: `.claude/rules/upstream-cli-contract.md`.
+- `pnpm run upgrade` 후 `pnpm install` 한 번(의존성 바뀌었을 수 있음) → 확인하고 커밋.
 
 ---
 
