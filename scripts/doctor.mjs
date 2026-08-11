@@ -48,9 +48,9 @@ const up = run('kvid', ['update']);
 process.stdout.write(up.stdout || '');
 process.stderr.write(up.stderr || '');
 
-// 3) skills install (선택 — 실패해도 치명적 아님)
-console.log('\n▶ kvid skills install ...');
-const sk = run('kvid', ['skills', 'install']);
+// 3) 기본 스킬 번들 설치 (kvid init — 이름 불필요. 선택, 실패해도 치명적 아님)
+console.log('\n▶ kvid init (기본 스킬 번들) ...');
+const sk = run('kvid', ['init']);
 process.stdout.write(sk.stdout || '');
 if (sk.status !== 0) console.log('  (스킬 설치 건너뜀/실패 — 핵심 영상 흐름은 kvid CLI 만으로 동작함)');
 

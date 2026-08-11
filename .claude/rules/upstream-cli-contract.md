@@ -26,8 +26,8 @@ kvid.ai API / web  ──(변경)──▶  kvidai-cli  ─release(git tag→rel
    런타임에 `kvid --version` 이 그보다 낮으면 첫 호출에서 **즉시 명확한 안내와 함께 실패**한다("kvid update 하세요").
    - 새 CLI 기능이 반드시 필요해지면 CLI 릴리스 후 **`KVID_MIN_VERSION` 을 bump** 한다.
 
-4. **최신화 = 원클릭.** `pnpm doctor` → `kvid update` + `kvid skills install`. `docs/SETUP.md` 에도 안내.
-   - **Skills 는 카피를 커밋하지 않는다** — `apm.yml`(`kvidai/kvidai-skills`)로 auto-pull, 또는 `kvid skills install`. 구버전 드리프트 방지.
+4. **최신화 = 원클릭.** `pnpm doctor` → `kvid update` + `kvid init`. `docs/SETUP.md` 에도 안내.
+   - **Skills 는 카피를 커밋하지 않는다** — `apm.yml`(`kvidai/kvidai-skills`)로 auto-pull, 또는 `kvid init`. 구버전 드리프트 방지.
 
 ## API 가 바뀔 때 체크리스트 (업스트림 담당)
 
