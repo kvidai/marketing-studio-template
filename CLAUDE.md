@@ -72,6 +72,20 @@ marketing-studio/
 | Video/content generation (독립 생성·재사용 한도·agent 위임 경계) | `.claude/rules/video-generation-rules.md` |
 | **Upstream 계약** (kvid CLI 로만 호출·최소버전 가드·pnpm doctor) | `.claude/rules/upstream-cli-contract.md` |
 
+## 업데이트 요청 처리 (유저가 "최신으로 맞춰줘" / "업데이트해줘" 등)
+
+1. **`pnpm doctor`** 실행 → 프레임워크(레시피/규칙/코드) + `kvid` CLI + 플랫폼 스킬 전부 최신화. 이어서 **`pnpm install`**.
+2. `pnpm doctor`/`pnpm run upgrade` 가 없으면(오래된 클론) **부트스트랩 1회**:
+   ```bash
+   git remote add upstream https://github.com/kvidai/marketing-studio-template.git
+   git fetch upstream
+   git checkout upstream/main -- .claude packages scripts docs context public apm.yml \
+     package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.base.json CLAUDE.md AGENTS.md
+   pnpm install && pnpm doctor
+   ```
+- **유저 콘텐츠(`campaigns/` `references/` `presets/` `.env.production`)는 절대 건드리지 않는다** — 프레임워크 폴더만 갱신.
+- 계약/원리: `.claude/rules/upstream-cli-contract.md`.
+
 ## Running Packages
 
 All packages use `tsx` — no build step needed.
