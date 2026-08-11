@@ -128,6 +128,22 @@ async function createProject(name: string, presetId?: string): Promise<number> {
   return d.id as number;
 }
 
+/** mime → composition.assets 자산 타입 */
+function assetTypeFromMime(mime: string): 'image' | 'video' | 'audio' {
+  if (mime.startsWith('video/')) return 'video';
+  if (mime.startsWith('audio/')) return 'audio';
+  return 'image';
+}
+
+/** kvid assets add-composition — 프로젝트 composition.assets 에 자산 등록(add_asset). 프롬프트 토큰 0. */
+async function addCompositionAsset(
+  projectId: number,
+  email: string,
+  asset: { id: string; type: 'image' | 'video' | 'audio'; filename: string; remoteUrl: string },
+): Promise<void> {
+  await runKvid(['assets', 'add-composition', String(projectId), email, JSON.stringify(asset)]);
+}
+
 /** kvid project replace-composition — composition 전체 교체 */
 async function replaceComposition(projectId: number, composition: unknown): Promise<void> {
   const tmp = resolve(tmpdir(), `kvidai-composition-${projectId}.json`);
@@ -242,18 +258,13 @@ export async function assembleProject(cfg: AssembleConfig): Promise<AssembleResu
 // Claude(전처리) 가 압축 브리프+자산을 준비 → 에이전트가 대본/씬/생성/조립.
 // message = 제품지식 + 자산 매니페스트(파일명+설명+추천용도). attach = 첨부할 로컬 파일.
 
-/** kvid video generate — 압축메시지 + 첨부(cdnUrl) 로 에이전트 실행 → editor URL */
-async function agentGenerate(
-  projectId: number,
-  message: string,
-  attachments: { cdnUrl: string; mimeType: string; filename: string; size: number }[],
-  presetId?: string,
-): Promise<string> {
+/** kvid video generate — 압축메시지로 에이전트 실행 → editor URL.
+ *  자산은 프로젝트 composition.assets 에 미리 등록(add_asset, 토큰 0)하고 attachedFiles 는 안 쓴다.
+ *  서버가 자산 매니페스트(id+파일명)를 프롬프트에 자동 주입 → 에이전트가 use_uploaded_asset 으로 배치. */
+async function agentGenerate(projectId: number, message: string, presetId?: string): Promise<string> {
   const args = ['video', 'generate', String(projectId), message];
   // ⚠️ 프리셋(voice/tone)은 generate 의 --preset-id 로 적용됨 (create-project 만으론 안 됨).
   if (presetId) args.push('--preset-id', presetId);
-  // ⚠️ --attachments 의 size 는 실제 크기여야 함. size 0 이면 에이전트가 빈 파일로 보고 이미지를 안 씀.
-  if (attachments.length) args.push('--attachments', JSON.stringify(attachments));
   const res = await runKvid<{ url?: string }>(args);
   return res.url ?? `https://kvid.ai/en/editor/${projectId}`;
 }
@@ -276,32 +287,42 @@ export interface AgentResult {
 
 export async function generateWithAgent(cfg: AgentConfig): Promise<AgentResult> {
   if (!process.env.KVIDAI_API_KEY) throw new Error('KVIDAI_API_KEY 미설정');
-  // agent 모드도 kvid CLI(video generate --preset-id --attachments)로 동작 — 스킬 불필요.
+  const email = process.env.KVIDAI_USER_EMAIL;
+  if (!email) throw new Error('KVIDAI_USER_EMAIL 미설정 (add_asset 에 필요)');
 
-  // 참고(2026-07-31): 예전 "message 길이 가드"는 제거했다. 첨부 이미지 미배치의 실제 원인은
-  // 긴 message 자체가 아니라 서버 estimateSceneCount 가 "3분할" 같은 합성어의 "분" 을 "3분(minutes)"
-  // 으로 오인해 long-video 경로로 오라우팅한 것이었고, 플랫폼에서 수정됨. (30초 요청은 short-edit 경로.)
-  // (2026-08 플랫폼 업데이트: long-video("3분"+) + 첨부 이미지 배치도 이제 지원됨.)
+  // agent 모드 = 토큰-free 자산 라이브러리 경로 (2026-08 검증, project 564: 12/12 배치):
+  //   프로젝트 생성 → 자산을 composition.assets 에 등록(add_asset, 프롬프트 토큰 0) → attachedFiles 없이 generate.
+  //   서버가 자산 매니페스트(id+파일명)를 프롬프트에 자동 주입 → 에이전트가 use_uploaded_asset 으로 배치.
+  //   attachedFiles(≤10 하드캡)를 안 거쳐 이미지 개수 제한이 없다. message 엔 분석기반 설명만.
 
-  // 1. 첨부 자산 업로드
-  const attachments: { cdnUrl: string; mimeType: string; filename: string; size: number }[] = [];
-  const attached: { file: string; cdnUrl: string }[] = [];
-  for (const file of cfg.attachFiles ?? []) {
-    const path = resolve(cfg.assetBaseDir, file);
-    if (!existsSync(path)) throw new Error(`첨부 자산 없음: ${path}`);
-    process.stderr.write(`[video] uploading ${file}...\n`);
-    const { cdnUrl, mimeType, size } = await uploadMedia(path);
-    attachments.push({ cdnUrl, mimeType, filename: basename(file), size });
-    attached.push({ file, cdnUrl });
-  }
-
-  // 2. 프로젝트 생성/재사용
+  // 1. 프로젝트 생성/재사용 (add_asset 전에 projectId 필요)
   const projectId = cfg.projectId ?? (await createProject(cfg.name, cfg.presetId));
   process.stderr.write(cfg.projectId ? `[video] reusing project ${projectId}\n` : `[video] project ${projectId} created\n`);
 
-  // 3. 에이전트 실행 (대본/씬/생성/조립) — 1~3분
-  process.stderr.write(`[video] agent generating (attachments: ${attachments.length}, preset: ${cfg.presetId ?? 'default'})...\n`);
-  const editorUrl = await agentGenerate(projectId, cfg.message, attachments, cfg.presetId);
+  // 2. 자산 업로드 → composition.assets 등록 (프롬프트 토큰 0)
+  //    assetId 는 실행마다 고유 토큰 — 에디터 assetId 캐시 충돌 방지(assembleProject 와 동일 이유).
+  const runTok = Date.now().toString(36);
+  const attached: { file: string; cdnUrl: string }[] = [];
+  const files = cfg.attachFiles ?? [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const path = resolve(cfg.assetBaseDir, file);
+    if (!existsSync(path)) throw new Error(`첨부 자산 없음: ${path}`);
+    process.stderr.write(`[video] uploading ${file}...\n`);
+    const { cdnUrl, mimeType } = await uploadMedia(path);
+    await addCompositionAsset(projectId, email, {
+      id: `lib_${runTok}_${i + 1}`,
+      type: assetTypeFromMime(mimeType),
+      filename: basename(file),
+      remoteUrl: cdnUrl,
+    });
+    attached.push({ file, cdnUrl });
+  }
+  process.stderr.write(`[video] registered ${attached.length} assets → composition.assets (token-free, no 10-cap)\n`);
+
+  // 3. 에이전트 실행 (attachedFiles 없이) — 서버가 자산 매니페스트 자동 주입. 1~3분.
+  process.stderr.write(`[video] agent generating (assets: ${attached.length}, preset: ${cfg.presetId ?? 'default'})...\n`);
+  const editorUrl = await agentGenerate(projectId, cfg.message, cfg.presetId);
 
   // 4. 스냅샷
   const composition = await getProject(projectId);
