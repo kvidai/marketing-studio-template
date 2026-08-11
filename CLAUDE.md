@@ -70,6 +70,7 @@ marketing-studio/
 | Coding guidelines | `.claude/rules/coding-guidelines.md` |
 | Dependency management | `.claude/rules/dependency-management.md` |
 | Video/content generation (독립 생성·재사용 한도·agent 위임 경계) | `.claude/rules/video-generation-rules.md` |
+| **Upstream 계약** (kvid CLI 로만 호출·최소버전 가드·pnpm doctor) | `.claude/rules/upstream-cli-contract.md` |
 
 ## Running Packages
 

@@ -32,6 +32,11 @@ export function buildPreview(plan: ScenePlan) {
 // 기본은 PATH 의 `kvid`.
 const KVID_BIN = process.env.KVIDAI_CLI_BIN ?? 'kvid';
 
+// ⛔ 최소 호환 CLI 버전 (단일 소스). API/web 계약이 바뀌면 kvid CLI 를 먼저 릴리스한 뒤 여기 bump 한다.
+//   런타임 가드가 이보다 낮은 kvid 를 즉시 막아 "과거버전으로 인한 조용한 오류"를 방지한다.
+//   자세한 계약: `.claude/rules/upstream-cli-contract.md`. 갱신: `kvid update` (또는 `pnpm doctor`).
+export const KVID_MIN_VERSION = '0.9.0';
+
 // ── 프로세스 호출 헬퍼 (stdout=결과, stderr=진행상황) ─────────────────────────
 
 function runProc(cmd: string, args: string[], label: string): Promise<string> {
@@ -47,8 +52,44 @@ function runProc(cmd: string, args: string[], label: string): Promise<string> {
   });
 }
 
+// semver 비교 (x.y.z): a<b → -1, a==b → 0, a>b → 1
+function cmpSemver(a: string, b: string): number {
+  const pa = a.split('.').map((n) => parseInt(n, 10) || 0);
+  const pb = b.split('.').map((n) => parseInt(n, 10) || 0);
+  for (let i = 0; i < 3; i++) {
+    const d = (pa[i] ?? 0) - (pb[i] ?? 0);
+    if (d !== 0) return d < 0 ? -1 : 1;
+  }
+  return 0;
+}
+
+// ⛔ 런타임 가드 — 첫 kvid 호출 전 1회. 최소 버전 미만이면 명확한 안내로 실패(조용한 깨짐 방지).
+let kvidVersionOk = false;
+async function assertKvidVersion(): Promise<void> {
+  if (kvidVersionOk) return;
+  let out: string;
+  try {
+    out = await runProc(KVID_BIN, ['--version', '--json'], 'kvid --version');
+  } catch (e) {
+    throw new Error(`kvid CLI 를 실행할 수 없음 — 설치: curl https://cli.kvid.ai/install -fsS | bash (${(e as Error).message})`);
+  }
+  let ver = '';
+  try {
+    ver = (JSON.parse(out.slice(out.indexOf('{'))) as { version?: string }).version ?? '';
+  } catch {
+    /* 아래에서 처리 */
+  }
+  if (!ver) throw new Error(`kvid --version 파싱 실패: ${out.slice(0, 120)}`);
+  if (cmpSemver(ver, KVID_MIN_VERSION) < 0)
+    throw new Error(
+      `kvid CLI ${ver} 는 너무 오래됨 — 최소 ${KVID_MIN_VERSION} 필요.\n  갱신: kvid update  (또는 pnpm doctor / curl https://cli.kvid.ai/install -fsS | bash)`,
+    );
+  kvidVersionOk = true;
+}
+
 /** kvid CLI 호출 (--json). stdout 마지막 JSON 파싱. */
 async function runKvid<T = unknown>(args: string[]): Promise<T> {
+  await assertKvidVersion();
   const raw = await runProc(KVID_BIN, [...args, '--json'], `kvid ${args[0]}`);
   const start = raw.lastIndexOf('\n{') >= 0 ? raw.indexOf('{', raw.lastIndexOf('\n{')) : raw.indexOf('{');
   const jsonStr = start >= 0 ? raw.slice(start) : raw;
@@ -240,7 +281,7 @@ export async function generateWithAgent(cfg: AgentConfig): Promise<AgentResult> 
   // 참고(2026-07-31): 예전 "message 길이 가드"는 제거했다. 첨부 이미지 미배치의 실제 원인은
   // 긴 message 자체가 아니라 서버 estimateSceneCount 가 "3분할" 같은 합성어의 "분" 을 "3분(minutes)"
   // 으로 오인해 long-video 경로로 오라우팅한 것이었고, 플랫폼에서 수정됨. (30초 요청은 short-edit 경로.)
-  // 남은 미지원: 진짜 long-video("3분"+) + 첨부 이미지 배치는 아직 별도 기능(추후).
+  // (2026-08 플랫폼 업데이트: long-video("3분"+) + 첨부 이미지 배치도 이제 지원됨.)
 
   // 1. 첨부 자산 업로드
   const attachments: { cdnUrl: string; mimeType: string; filename: string; size: number }[] = [];
