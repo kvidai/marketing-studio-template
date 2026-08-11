@@ -40,11 +40,9 @@ kvid 에이전트 API는 **토큰 한계(~70k, system prompt 포함)** 로 모�
 
 즉 유저가 direct/cardnews 를 **입으로 지정하지 않으면 예외 없이 agent** 로 조용히 진행한다.
 
-**⚙️ 자동 예외 (묻지 말고 내가 판단): 이미지가 많으면 direct.**
-에이전트는 **다수 이미지를 배치하지 못한다** — 실측 확인: `attachedFiles` ~10개 캡 + `composition.assets` 만 시딩(첨부 없음)하면 에이전트가 안 쓰고 SSE 가 행(2026-08, project 556). 그래서:
-- **씬에 정확히 배치할 이미지가 대략 8장 초과, 또는 긴 영상** → **direct 결정적 배치로 자동 전환**(`assembleProject`, composition.assets+items 무제한). 유저에게 묻지 않는다.
-- 이때 품질 극대화: **Claude 가 전 이미지 vision 분석 → 씬 매핑·대본 → 전 이미지 결정적 배치** + (선택) `kvid voice` 씬별 나레이션(길이 동기). = 창의(대본/음성) + 정확(눈 달린 Claude 배치).
-- **≤ ~8장 짧은 광고**는 그대로 agent(창의 최대, attachedFiles).
+**⚙️ 이미지가 많아도 agent 유지 — direct 로 폴백하지 않는다.**
+목표 흐름(다수 이미지): **Claude 가 파일 분석 → 업로드 → message 에 `URL + 분석기반 설명` 매니페스트로 전달 → 에이전트가 그 URL·설명으로 composition 작성.** (파일 바이트 대신 URL+설명만; `attachedFiles` ~10캡을 안 거침. 필요 시 `composition.assets` 시딩 병행.)
+⚠️ **업스트림 의존(진행 중)**: 에이전트가 **매니페스트의 URL 을 실제 씬에 배치**하도록 **API/에이전트 작업이 필요**하다 — 현재 미완(실측 2026-08 project 556: 미소비 시 SSE 행). 지원 전까지 다수 이미지는 핵심 컷으로 **큐레이션(≤~10 attachedFiles)** 하거나 유저 지시를 따른다. **direct 로 자동 전환하지 않는다.** 추적: `kvidai-cli/.claude/plans/20260811_todo_agent-composition-assets.md`, `.claude/rules/upstream-cli-contract.md`.
 
 ### 1. 스캐폴드
 ```bash
